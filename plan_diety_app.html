@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Plan diety — Mati & Chania</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap&subset=latin-ext" rel="stylesheet">
+<style>
+:root{
+  --bg:#F1F3EC; --card:#FFFFFF; --ink:#1C2620; --muted:#5C6B60; --line:#DFE5DA;
+  --green:#3E7C4F; --green-soft:#E4F0E6; --honey:#DB9A3E; --honey-soft:#FBF0DC;
+  --mati:#3E7C4F; --chania:#96527D; --chania-soft:#F5E9F1;
+  --red:#C4553B; --radius:14px;
+  --disp:'Bricolage Grotesque',sans-serif; --body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--body);background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45;padding-bottom:90px}
+h1,h2,h3{font-family:var(--disp)}
+button{font-family:var(--body);cursor:pointer;border:none;background:none;font-size:inherit;color:inherit}
+input,select,textarea{font-family:var(--body);font-size:15px;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff;color:var(--ink);width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--green);outline-offset:1px;border-color:var(--green)}
+.wrap{max-width:980px;margin:0 auto;padding:0 14px}
+
+/* Header */
+header{padding:18px 0 10px}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand h1{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.brand .sub{color:var(--muted);font-size:13px;font-weight:500}
+.saveflag{font-size:12px;color:var(--muted);margin-left:auto;transition:opacity .4s;opacity:0}
+.saveflag.on{opacity:1}
+
+/* Tabs */
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);z-index:50;box-shadow:0 -4px 20px rgba(28,38,32,.06)}
+.tabs{max-width:980px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:76px;padding:10px 4px 12px;text-align:center;font-size:11px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;border-top:2.5px solid transparent}
+.tab svg{width:21px;height:21px;stroke:currentColor}
+.tab.on{color:var(--green);border-top-color:var(--green)}
+
+/* Cards & common */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.pill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pillrow{display:flex;gap:7px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
+.pillrow::-webkit-scrollbar{display:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:11px;font-weight:600;font-size:14px;background:var(--green);color:#fff}
+.btn.sec{background:var(--green-soft);color:var(--green)}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn.danger{background:#FBE9E4;color:var(--red)}
+.btn.sm{padding:6px 11px;font-size:13px;border-radius:9px}
+.row{display:flex;gap:8px;align-items:center}
+.grow{flex:1}
+.muted{color:var(--muted)}
+.tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--honey-soft);color:#9A6A1E}
+.empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:14px}
+.section-title{font-size:17px;font-weight:800;margin:16px 0 10px;font-family:var(--disp)}
+
+/* Person gauge */
+.gauges{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+@media(max-width:560px){.gauges{grid-template-columns:1fr}}
+.gauge{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.gauge .who{font-family:var(--disp);font-weight:800;font-size:15px;display:flex;align-items:center;gap:7px}
+.dot{width:10px;height:10px;border-radius:50%}
+.gbar{height:9px;border-radius:99px;background:var(--bg);overflow:hidden;margin:5px 0 2px}
+.gbar i{display:block;height:100%;border-radius:99px;transition:width .4s}
+.glabel{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-weight:500}
+.macmini{display:flex;gap:12px;margin-top:8px;font-size:12px;color:var(--muted)}
+.macmini b{color:var(--ink)}
+
+/* Meal blocks */
+.meal{background:#fff;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.meal-h{padding:10px 14px;background:linear-gradient(0deg,rgba(62,124,79,.04),rgba(62,124,79,.04));border-bottom:1px solid var(--line);font-family:var(--disp);font-weight:800;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.mperson{padding:9px 14px;border-bottom:1px solid var(--line)}
+.mperson:last-child{border-bottom:none}
+.mp-h{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;margin-bottom:5px}
+.dish{display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--bg);border-radius:10px;margin-bottom:6px}
+.dish .dn{flex:1;font-weight:600;font-size:13.5px;line-height:1.3}
+.dish .dm{font-size:11px;color:var(--muted)}
+.step{display:flex;align-items:center;gap:2px;background:#fff;border:1px solid var(--line);border-radius:8px}
+.step button{width:26px;height:26px;font-weight:700;color:var(--green);font-size:15px}
+.step span{min-width:26px;text-align:center;font-size:12.5px;font-weight:700}
+.xbtn{width:26px;height:26px;border-radius:8px;color:var(--red);font-size:16px;font-weight:600;flex-shrink:0}
+.addd{font-size:12.5px;font-weight:600;color:var(--green);padding:5px 2px;display:inline-flex;gap:4px;align-items:center}
+
+/* Recipe list */
+.rcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-bottom:9px}
+.rcard .rn{font-weight:700;font-size:15px;font-family:var(--disp)}
+.rmac{display:flex;gap:11px;font-size:12px;color:var(--muted);margin-top:4px;flex-wrap:wrap}
+.rmac b{color:var(--ink)}
+.rdesc{font-size:12.5px;color:var(--muted);margin-top:4px}
+.ringlist{margin-top:8px;font-size:13px;display:none}
+.ringlist.open{display:block}
+.ringlist li{list-style:none;padding:4px 0;border-bottom:1px dashed var(--line);display:flex;justify-content:space-between}
+
+/* Shopping */
+.shopcat{font-family:var(--disp);font-weight:800;font-size:14px;margin:14px 0 6px;color:var(--green)}
+.shopitem{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px 13px;margin-bottom:6px}
+.shopitem.done{opacity:.45}
+.shopitem.done .sn{text-decoration:line-through}
+.chk{width:22px;height:22px;border:2px solid var(--line);border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+.shopitem.done .chk{background:var(--green);border-color:var(--green)}
+.sn{flex:1;font-weight:600;font-size:14px}
+.sq{font-size:13px;color:var(--muted);font-weight:600}
+
+/* Table */
+.ptable{width:100%;border-collapse:collapse;font-size:13px}
+.ptable th{text-align:left;padding:7px 8px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;border-bottom:1.5px solid var(--line)}
+.ptable td{padding:8px;border-bottom:1px solid var(--line)}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(28,38,32,.45);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#fff;width:100%;max-width:600px;max-height:88vh;border-radius:20px 20px 0 0;display:flex;flex-direction:column;animation:up .22s ease}
+@media(min-width:640px){.modal-bg{align-items:center;padding:20px}.modal{border-radius:18px}}
+@keyframes up{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}
+.modal-h{padding:16px 18px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.modal-h h3{font-size:17px;font-weight:800}
+.modal-b{padding:14px 18px;overflow-y:auto;flex:1}
+.modal-f{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:8px}
+.field{margin-bottom:11px}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.03em}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.f4{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.pick{padding:10px 12px;border:1px solid var(--line);border-radius:11px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer}
+.pick:hover{border-color:var(--green);background:var(--green-soft)}
+.pick .pn{font-weight:600;font-size:14px}
+.pick .pm{font-size:11.5px;color:var(--muted)}
+.inge{display:flex;gap:6px;margin-bottom:6px;align-items:center}
+.inge input.q{width:70px;flex-shrink:0}
+.inge select{flex:1;min-width:0}
+
+/* Week strip */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:13px}
+.wd{background:#fff;border:1.5px solid var(--line);border-radius:11px;padding:7px 3px 6px;text-align:center;cursor:pointer}
+.wd.on{border-color:var(--ink);background:var(--ink);color:#fff}
+.wd .dn2{font-size:11px;font-weight:800;font-family:var(--disp)}
+.wd .dk{font-size:9.5px;color:var(--muted);margin-top:1px}
+.wd.on .dk{color:rgba(255,255,255,.7)}
+.wd .mini{height:3.5px;border-radius:9px;background:var(--bg);margin-top:4px;overflow:hidden}
+.wd.on .mini{background:rgba(255,255,255,.25)}
+.wd .mini i{display:block;height:100%;background:var(--green)}
+.wd.on .mini i{background:#7FD494}
+
+.searchbox{position:relative;margin-bottom:10px}
+.calc-out{background:var(--ink);color:#E8EFE9;border-radius:var(--radius);padding:15px;font-size:14px;white-space:pre-wrap;font-variant-numeric:tabular-nums;line-height:1.7}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:99px;font-size:13.5px;font-weight:600;z-index:200;opacity:0;transition:.3s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <div class="brand">
+    <h1>Plan diety</h1>
+    <span class="sub">Mati & Chania · tygodniowy jadłospis</span>
+    <span class="saveflag" id="saveflag">✓ zapisano</span>
+  </div>
+</header>
+
+<main class="wrap" id="main"></main>
+
+<nav><div class="tabs" id="tabs"></div></nav>
+<div class="modal-bg" id="modalbg"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SEED = {"recipes":[{"id":1,"name":"Skyr (150g) + Granola 80g","meal":"Śniadanie","kcal":442.0,"f":16.0,"c":50.0,"p":24.5,"desc":"Jeden skyr","ings":[{"product":"Granola","qty":80.0,"unit":"g"},{"product":"Skyr","qty":150.0,"unit":"g"}]},{"id":2,"name":"One-pot Greek chicken risoni (orzo)","meal":"Obiad","kcal":829.03,"f":28.47,"c":100.7,"p":42.5,"desc":"","ings":[{"product":"Bulion","qty":150.0,"unit":"g"},{"product":"Cebula","qty":60.0,"unit":"g"},{"product":"Cukinia","qty":200.0,"unit":"g"},{"product":"Cytryna","qty":0.1,"unit":"szt."},{"product":"Czosnek","qty":2.0,"unit":"ząbki"},{"product":"Makaron Orzo","qty":75.0,"unit":"g"},{"product":"Nogi z kurczaka","qty":125.0,"unit":"g"},{"product":"Oliwa","qty":15.0,"unit":"ml"},{"product":"Papryka","qty":70.0,"unit":"g"},{"product":"Pomdory koktajlowe","qty":90.0,"unit":"g"},{"product":"Pomidory z puszki","qty":100.0,"unit":"g"},{"product":"Przecier pomidorowy","qty":5.0,"unit":"g"},{"product":"Ser feta","qty":25.0,"unit":"g"}]},{"id":3,"name":"Twarożek z chlebem","meal":"Kolacja","kcal":427.6,"f":19.6,"c":39.0,"p":23.8,"desc":"100 gramów twarogu; dwie kromki chleba","ings":[{"product":"Chleb","qty":2.0,"unit":"kromka"},{"product":"Masło","qty":10.0,"unit":"g"},{"product":"Rzodkiewka","qty":2.0,"unit":"szt."},{"product":"Szczypiorek","qty":10.0,"unit":"g"},{"product":"Śmietana 18%","qty":25.0,"unit":"ml"},{"product":"Twaróg półtłusty","qty":100.0,"unit":"g"}]},{"id":4,"name":"Banan","meal":"Ekstra","kcal":113.2,"f":0.4,"c":26.2,"p":1.2,"desc":"1 banan","ings":[{"product":"Banan","qty":1.0,"unit":"szt."}]},{"id":5,"name":"Jaja po turecku","meal":"Kolacja","kcal":273.87,"f":12.59,"c":26.55,"p":13.59,"desc":"1 jajko i jedna kromka","ings":[{"product":"Chleb","qty":1.0,"unit":"kromka"},{"product":"Cytryna","qty":0.2,"unit":"szt."},{"product":"Czosnek","qty":1.0,"unit":"ząbki"},{"product":"Jajko","qty":1.0,"unit":"szt."},{"product":"Jogurt grecki","qty":40.0,"unit":"g"},{"product":"Masło","qty":5.0,"unit":"g"},{"product":"Ocet","qty":5.0,"unit":"g"},{"product":"Oliwa","qty":5.0,"unit":"ml"}]},{"id":6,"name":"Owsianka z malinami i białą czekoladą","meal":"Śniadanie","kcal":337.48,"f":6.92,"c":53.14,"p":15.66,"desc":"pół banana, pół jajka; 40g płatków i 20 mleka","ings":[{"product":"Banan","qty":0.5,"unit":"szt."},{"product":"Biała czekolada","qty":6.0,"unit":"g"},{"product":"Białko serwatkowe","qty":10.0,"unit":"g"},{"product":"Maliny mrożone","qty":70.0,"unit":"g"},{"product":"Mleko","qty":25.0,"unit":"ml"},{"product":"Płatki owsiane","qty":40.0,"unit":"g"},{"product":"Proszek do pieczenia","qty":7.5,"unit":"g"}]},{"id":7,"name":"Kanapka z serem, szynką, białym serkiem, sałata, ogórek, jajko","meal":"Lunch","kcal":210.4,"f":14.8,"c":2.2,"p":17.1,"desc":"1 kanapka, jedno jajko, serek biały, plaster szynki; sera, ogórek","ings":[{"product":"Jajko","qty":1.0,"unit":"szt."},{"product":"Ogórek","qty":20.0,"unit":"g"},{"product":"Sałata","qty":10.0,"unit":"g"},{"product":"Ser biały","qty":10.0,"unit":"g"},{"product":"Ser żółty","qty":20.0,"unit":"g"},{"product":"Szynka (ok 20g)","qty":1.0,"unit":"plaster"}]},{"id":8,"name":"Torilla z jajkiem, szynką i warzywami","meal":"Lunch","kcal":364.4,"f":15.2,"c":36.45,"p":20.45,"desc":"","ings":[{"product":"Jajko","qty":1.0,"unit":"szt."},{"product":"Ogórek","qty":20.0,"unit":"g"},{"product":"Pomidor","qty":60.0,"unit":"g"},{"product":"Sałata","qty":25.0,"unit":"g"},{"product":"Ser biały","qty":20.0,"unit":"g"},{"product":"Szynka (ok 20g)","qty":1.0,"unit":"plaster"},{"product":"Torlilla","qty":1.0,"unit":"szt."}]},{"id":9,"name":"Szakszuka","meal":"Kolacja","kcal":266.66,"f":14.1,"c":18.65,"p":16.29,"desc":"porcja na 2 jajka","ings":[{"product":"Cebula","qty":80.0,"unit":"g"},{"product":"Czosnek","qty":2.0,"unit":"ząbki"},{"product":"Jajko","qty":2.0,"unit":"szt."},{"product":"Masło","qty":5.0,"unit":"g"},{"product":"Pomidor","qty":200.0,"unit":"g"}]},{"id":10,"name":"Frankfurterki z chlebem i keczupem","meal":"Śniadanie","kcal":0.0,"f":0.0,"c":0.0,"p":0.0,"desc":"100 g frankurferek i kromka chleba","ings":[]},{"id":11,"name":"schabowy ziemniaczki mizeria","meal":"Obiad","kcal":532.0,"f":18.0,"c":65.0,"p":27.5,"desc":"schab 150 g, ziemniaki 200 i mizeria na jogurcie","ings":[{"product":"Schabowy panierowany","qty":150.0,"unit":"g"},{"product":"Ziemniaki","qty":250.0,"unit":"g"}]},{"id":12,"name":"Frankfurterki z chlebem i keczupem -kolacja","meal":"Kolacja","kcal":459.8,"f":34.6,"c":23.15,"p":13.95,"desc":"","ings":[{"product":"Chleb","qty":1.0,"unit":"kromka"},{"product":"Franfukretki","qty":100.0,"unit":"g"},{"product":"Kutchup","qty":15.0,"unit":"g"},{"product":"Masło","qty":10.0,"unit":"g"}]},{"id":13,"name":"Swedish meatballs","meal":"Obiad","kcal":689.32,"f":32.96,"c":66.48,"p":31.69,"desc":"120 g mięsa, 200 gramów ziemniaków, 2 ogórki konserwowe","ings":[{"product":"Bulion","qty":100.0,"unit":"g"},{"product":"Cebula","qty":50.0,"unit":"g"},{"product":"Chleb","qty":0.4,"unit":"kromka"},{"product":"Jajko","qty":0.2,"unit":"szt."},{"product":"Masło","qty":8.0,"unit":"g"},{"product":"Mąka","qty":6.0,"unit":"g"},{"product":"Mieso mielone wolowo-wieprzowe","qty":120.0,"unit":"g"},{"product":"Śmietanka słodka 12%","qty":25.0,"unit":"g"},{"product":"Ziemniaki","qty":200.0,"unit":"g"},{"product":"Ogórki konserowe","qty":2.0,"unit":"szt."},{"product":"Żurawina","qty":5.0,"unit":"g"}]},{"id":14,"name":"Owoce","meal":"Kolacja","kcal":0.0,"f":0.0,"c":0.0,"p":0.0,"desc":"","ings":[]},{"id":15,"name":"omlet biszkoptowy","meal":"Śniadanie","kcal":166.74,"f":11.54,"c":2.7,"p":13.02,"desc":"","ings":[{"product":"Cukier","qty":2.0,"unit":"g"},{"product":"Jaja strusia","qty":0,"unit":"szt."},{"product":"Jajko","qty":2.0,"unit":"szt."},{"product":"Jogurt grecki","qty":2.0,"unit":"g"},{"product":"Masło","qty":2.0,"unit":"g"}]},{"id":16,"name":"Kanapka z serem i szynką","meal":"Śniadanie","kcal":0.0,"f":0.0,"c":0.0,"p":0.0,"desc":"","ings":[]},{"id":17,"name":"Łosoś z ryżem i fasolka szpraragowa","meal":"Obiad","kcal":509.4,"f":13.8,"c":68.1,"p":28.2,"desc":"Łosoś 100g, Ryż 70g, Fasolka szparagowa mrożona 150g, Cytryna 0,5szt.","ings":[{"product":"Łosoś","qty":100.0,"unit":"g"},{"product":"Ryż","qty":70.0,"unit":"g"},{"product":"Fasolka szparagowa mrożona","qty":150.0,"unit":"g"},{"product":"Cytryna","qty":0.5,"unit":"szt."}]},{"id":18,"name":"Białko serwatkowe z wodą","meal":"Ekstra","kcal":115.5,"f":1.5,"c":1.5,"p":24.0,"desc":"30 gramów - jedna miarka","ings":[{"product":"Białko serwatkowe","qty":30.0,"unit":"g"}]},{"id":19,"name":"Białko serwatkowe z wodą","meal":"Obiad","kcal":115.5,"f":1.5,"c":1.5,"p":24.0,"desc":"100 gramów mięsa; 80 gramów makaronu","ings":[{"product":"Białko serwatkowe","qty":30.0,"unit":"g"}]},{"id":20,"name":"Stek","meal":"Kolacja","kcal":760.64,"f":45.09,"c":44.9,"p":43.82,"desc":"pół steka, ok 150g + frytki","ings":[{"product":"Stek","qty":150.0,"unit":"g"},{"product":"Frytki","qty":150.0,"unit":"g"},{"product":"Olej","qty":15.0,"unit":"ml"},{"product":"Czosnek","qty":1.0,"unit":"ząbki"}]},{"id":21,"name":"Tatar","meal":"Kolacja","kcal":285.86,"f":17.9,"c":2.55,"p":28.65,"desc":"pół opakowania 100g; 2 kromki chleba","ings":[{"product":"Tatar","qty":100.0,"unit":"g"},{"product":"Jajko","qty":1.0,"unit":"szt."},{"product":"Cebula","qty":25.0,"unit":"g"},{"product":"Olej","qty":5.0,"unit":"ml"}]},{"id":22,"name":"Naleśnik z dżemem","meal":"Śniadanie","kcal":190.52,"f":7.34,"c":26.95,"p":4.16,"desc":"1 najeśnik z dżemem","ings":[{"product":"Mąka","qty":16.0,"unit":"g"},{"product":"Mleko","qty":30.0,"unit":"ml"},{"product":"Woda","qty":25.0,"unit":"ml"},{"product":"Jajko","qty":0.25,"unit":"szt."},{"product":"Olej","qty":5.0,"unit":"ml"},{"product":"Dżem","qty":20.0,"unit":"g"}]},{"id":23,"name":"Rosół","meal":"Obiad","kcal":2747.01,"f":44.54,"c":458.5,"p":128.04,"desc":"200 ml rosołu, 80 g makaronu","ings":[{"product":"Porcja rosołowa","qty":0.25,"unit":"szt"},{"product":"Marchewka","qty":300.0,"unit":"g"},{"product":"udka z kurczaka","qty":300.0,"unit":"g"},{"product":"pietruszka","qty":150.0,"unit":"g"},{"product":"Seler","qty":150.0,"unit":"g"},{"product":"Cebula","qty":100.0,"unit":"g"},{"product":"Por","qty":200.0,"unit":"g"},{"product":"Makaron rosół","qty":500.0,"unit":"g"}]},{"id":24,"name":"Carpaccio z buraka","meal":"Kolacja","kcal":302.21,"f":13.21,"c":37.7,"p":8.13,"desc":"225g buraków, 20g orzechów; 50g fety","ings":[{"product":"Buraki","qty":225.0,"unit":"g"},{"product":"Orzechy włoskie","qty":20.0,"unit":"g"},{"product":"Rukola","qty":15.0,"unit":"g"},{"product":"Oliwa","qty":10.0,"unit":"ml"},{"product":"Cytryna","qty":0.3,"unit":"szt."}]},{"id":25,"name":"Torilla z jajecznicą","meal":"Śniadanie","kcal":498.0,"f":28.8,"c":32.25,"p":27.45,"desc":"tortilla; 2 jaja; plaster szynki; plaster sera","ings":[{"product":"Masło","qty":5.0,"unit":"g"},{"product":"Jajko","qty":2.0,"unit":"szt."},{"product":"Torlilla","qty":1.0,"unit":"szt."},{"product":"Ser żółty","qty":20.0,"unit":"g"},{"product":"Szynka (ok 20g)","qty":1.0,"unit":"plaster"}]},{"id":26,"name":"Jajecznica (2 jaja)","meal":"Śniadanie","kcal":361.9,"f":16.7,"c":34.65,"p":18.25,"desc":"2 jaja; szczypiorek, masło; kromka chleba","ings":[{"product":"Jajko","qty":2.0,"unit":"szt."},{"product":"Masło","qty":5.0,"unit":"g"},{"product":"Chleb","qty":2.0,"unit":"kromka"}]},{"id":27,"name":"Makaron z pesto i kurczakiem","meal":"Obiad","kcal":627.2,"f":15.2,"c":81.5,"p":41.1,"desc":"100 g Makaron penne\n30 g Pesto\n 120 g Pierś z kurczaka \n 5 ml  Oliwa","ings":[{"product":"Makaron penne","qty":100.0,"unit":"g"},{"product":"Pesto","qty":30.0,"unit":"g"},{"product":"Pierś z kurczaka","qty":120.0,"unit":"g"},{"product":"Oliwa","qty":5.0,"unit":"ml"}]},{"id":28,"name":"Serek wiejski z kromką chleba","meal":"Śniadanie","kcal":422.1,"f":16.9,"c":40.05,"p":27.45,"desc":"1 sereki i jedna kromka z masłem","ings":[{"product":"Serek wiejski","qty":200.0,"unit":"g"},{"product":"Chleb","qty":2.0,"unit":"kromka"},{"product":"Masło","qty":5.0,"unit":"g"}]},{"id":29,"name":"Pasta jajeczna","meal":"Śniadanie","kcal":401.7,"f":20.42,"c":35.63,"p":18.86,"desc":"2 kromki po 50 g pasty na kromkę","ings":[{"product":"Jajko","qty":2.0,"unit":"szt."},{"product":"Majonez","qty":7.5,"unit":"g"},{"product":"Śmietana 18%","qty":8.0,"unit":"ml"},{"product":"Szczypiorek","qty":5.0,"unit":"g"},{"product":"Musztarda","qty":4.0,"unit":"g"},{"product":"Chleb","qty":2.0,"unit":"kromka"}]},{"id":30,"name":"Jabłko","meal":"Ekstra","kcal":135.6,"f":1.2,"c":30.0,"p":1.2,"desc":"Jedno jabłko","ings":[{"product":"Jabłka","qty":1.0,"unit":"szt."},{"product":"Jabłka","qty":1.0,"unit":"szt."}]},{"id":31,"name":"Makaron z łososiem i szpinakiem","meal":"Obiad","kcal":579.82,"f":22.54,"c":67.73,"p":26.52,"desc":"80 g makaronu; 62,5 łososia","ings":[{"product":"Czosnek","qty":1.0,"unit":"ząbki"},{"product":"Masło","qty":5.0,"unit":"g"},{"product":"Szpinak","qty":50.0,"unit":"g"},{"product":"Śmietana 30%","qty":25.0,"unit":"g"},{"product":"Makaron tagiatlle","qty":87.5,"unit":"g"},{"product":"Cytryna","qty":0.2,"unit":"szt."},{"product":"Łosoś","qty":62.5,"unit":"g"},{"product":"Szczypiorek","qty":5.0,"unit":"g"}]},{"id":32,"name":"Batonik prince polo","meal":"Ekstra","kcal":0.0,"f":0.0,"c":0.0,"p":0.0,"desc":"","ings":[]},{"id":33,"name":"Indonesian Fried Rice","meal":"Obiad","kcal":401.45,"f":11.05,"c":50.59,"p":24.92,"desc":"Warto ugutować ryż wczesniej","ings":[{"product":"Olej","qty":5.0,"unit":"ml"},{"product":"Pierś z kurczaka","qty":50.0,"unit":"g"},{"product":"Ryż","qty":50.0,"unit":"g"},{"product":"Sos sojowy z cukrem","qty":15.0,"unit":"ml"},{"product":"Czosnek","qty":1.0,"unit":"ząbki"},{"product":"Papryczki chilli","qty":0.5,"unit":"szt."},{"product":"Cebula","qty":35.0,"unit":"g"},{"product":"Jajko","qty":1.0,"unit":"szt."},{"product":"Pomidor","qty":40.0,"unit":"g"},{"product":"Szalotka","qty":20.0,"unit":"g"}]},{"id":34,"name":"Popcorn","meal":"Ekstra","kcal":327.93,"f":30.57,"c":11.4,"p":1.8,"desc":"60 g popcornu, 30 ml oleju","ings":[{"product":"Ziarna kukurydzy","qty":60.0,"unit":"g"},{"product":"Olej","qty":30.0,"unit":"ml"}]},{"id":35,"name":"Halloumi z miodem i pitą","meal":"Obiad","kcal":585.55,"f":27.15,"c":52.0,"p":33.3,"desc":"100 g halloumi; jedna pita; jogurt; pomodor ogórek","ings":[{"product":"Halloumi","qty":100.0,"unit":"g"},{"product":"Pita","qty":1.0,"unit":"szt."},{"product":"Jogurt grecki","qty":25.0,"unit":"g"},{"product":"Pomidor","qty":30.0,"unit":"g"},{"product":"Ogórek","qty":30.0,"unit":"g"},{"product":"Miód","qty":10.0,"unit":"g"}]},{"id":36,"name":"Tost z serem i szynkom","meal":"Kolacja","kcal":318.7,"f":12.3,"c":37.9,"p":14.1,"desc":"1 tost","ings":[{"product":"Chleb tostowy","qty":2.0,"unit":"kromka"},{"product":"Ser żółty","qty":20.0,"unit":"g"},{"product":"Szynka (ok 20g)","qty":1.0,"unit":"plaster"},{"product":"Keczuk","qty":10.0,"unit":"ml"}]},{"id":37,"name":"Burrito śniadaniowe","meal":"Śniadanie","kcal":650.58,"f":38.26,"c":32.33,"p":44.23,"desc":"Jedno burrito","ings":[{"product":"Torlilla","qty":1.0,"unit":"szt."},{"product":"Jajko","qty":2.0,"unit":"szt."},{"product":"Ser żółty","qty":20.0,"unit":"g"},{"product":"Mięso mielone wołowe","qty":100.0,"unit":"g"},{"product":"Masło","qty":3.0,"unit":"g"},{"product":"Papryczka chipotle","qty":1.0,"unit":"szt."}]},{"id":38,"name":"Muffiny śniadaniowe z warzywami","meal":"Śniadanie","kcal":125.63,"f":9.67,"c":2.43,"p":7.22,"desc":"Jeden muffin","ings":[{"product":"Jajko","qty":0.5,"unit":"szt."},{"product":"Mleko","qty":10.0,"unit":"ml"},{"product":"Papryka","qty":10.0,"unit":"g"},{"product":"Boczek","qty":10.0,"unit":"g"},{"product":"Marchewka","qty":10.0,"unit":"g"},{"product":"Ser żółty","qty":10.0,"unit":"g"}]},{"id":39,"name":"Spinach-Avocado Smoothie","meal":"Śniadanie","kcal":443.61,"f":17.75,"c":44.16,"p":26.8,"desc":"1 smoothie","ings":[{"product":"Jogurt grecki","qty":240.0,"unit":"g"},{"product":"Szpinak","qty":30.0,"unit":"g"},{"product":"Banan","qty":1.0,"unit":"szt."},{"product":"Awokado","qty":0.25,"unit":"szt."},{"product":"Woda","qty":10.0,"unit":"ml"},{"product":"Miód","qty":7.0,"unit":"g"}]},{"id":40,"name":"Bułka z pasztetem","meal":"Śniadanie","kcal":291.9,"f":13.1,"c":31.0,"p":12.5,"desc":"1 bułka z pasztetem i 100 gramów pasztetu","ings":[{"product":"Pasztet","qty":50.0,"unit":"g"},{"product":"Bułka","qty":1.0,"unit":"szt."},{"product":"Ogórek","qty":40.0,"unit":"g"}]},{"id":41,"name":"Słodka chwila","meal":"Śniadanie","kcal":197.6,"f":1.6,"c":39.2,"p":6.6,"desc":"","ings":[{"product":"Słodka chwila","qty":1.0,"unit":"szt."}]},{"id":42,"name":"Kopytka z gulaszem","meal":"Obiad","kcal":505.97,"f":15.26,"c":68.5,"p":23.66,"desc":"","ings":[{"product":"Mąka pszenna","qty":35.0,"unit":"g"},{"product":"Ziemniaki","qty":110.0,"unit":"g"},{"product":"Kasza manna","qty":4.0,"unit":"g"},{"product":"Jajko","qty":0.25,"unit":"szt."},{"product":"Mięso z łopatki wieprzowej","qty":60.0,"unit":"g"},{"product":"Olej","qty":3.75,"unit":"ml"},{"product":"Cebula","qty":50.0,"unit":"g"},{"product":"Czosnek","qty":0.5,"unit":"ząbki"},{"product":"Marchewka","qty":25.0,"unit":"g"},{"product":"Pietruszka","qty":20.0,"unit":"g"},{"product":"Papryka","qty":50.0,"unit":"g"},{"product":"Ogórek kiszony","qty":25.0,"unit":"g"},{"product":"Passata","qty":125.0,"unit":"g"},{"product":"Bulion","qty":5.0,"unit":"g"},{"product":"Woda","qty":25.0,"unit":"ml"}]},{"id":43,"name":"Kaszka mleczna High Protein - Pilos","meal":"Kolacja","kcal":162.2,"f":3.0,"c":17.8,"p":16.0,"desc":"","ings":[{"product":"Kaszka mleczna High Protein - Pilos","qty":1.0,"unit":"szt."}]},{"id":44,"name":"Bułka z dynią. bialym serkiem i ogorkiem","meal":"Śniadanie","kcal":208.8,"f":4.4,"c":30.7,"p":11.6,"desc":"1 bulka, 20-30 g serka łaciate, warzywa","ings":[{"product":"Bułka","qty":1.0,"unit":"szt."},{"product":"Ser biały","qty":30.0,"unit":"g"},{"product":"Ogórek","qty":30.0,"unit":"g"},{"product":"Rukola","qty":10.0,"unit":"g"}]},{"id":45,"name":"Pudding chia z truskawkami","meal":"Lunch","kcal":167.7,"f":8.11,"c":17.63,"p":6.04,"desc":"jeden pudding","ings":[{"product":"Mleko","qty":100.0,"unit":"ml"},{"product":"Nasiona chia","qty":16.0,"unit":"g"},{"product":"Cukier","qty":10.0,"unit":"g"},{"product":"Truskawki","qty":20.0,"unit":"g"}]},{"id":46,"name":"Sałatka z batatem i rukola","meal":"Lunch","kcal":361.8,"f":17.4,"c":36.05,"p":15.25,"desc":"150 g batat, 30 g rukola, 50 g feta, 15 g slonecznika","ings":[{"product":"Bataty","qty":150.0,"unit":"g"},{"product":"rukola","qty":30.0,"unit":"g"},{"product":"Ser feta","qty":50.0,"unit":"g"},{"product":"Słonecznik ziarna","qty":15.0,"unit":"g"}]},{"id":47,"name":"Makaron udon z kurczakiem i warzywami","meal":"Obiad","kcal":407.39,"f":8.89,"c":51.75,"p":30.09,"desc":"100 g udon, 100 g kurczak, warzywa","ings":[{"product":"Udon","qty":100.0,"unit":"g"},{"product":"Pierś z kurczaka","qty":100.0,"unit":"g"},{"product":"Cebula","qty":35.0,"unit":"g"},{"product":"Papryka","qty":150.0,"unit":"g"},{"product":"Marchewka","qty":100.0,"unit":"g"},{"product":"Czosnek","qty":2.0,"unit":"ząbki"},{"product":"Olej","qty":7.5,"unit":"ml"},{"product":"Szczypiorek","qty":20.0,"unit":"g"}]},{"id":48,"name":"Białkowe racuchy z jabłkami","meal":"Kolacja","kcal":590.47,"f":17.1,"c":76.3,"p":32.85,"desc":"","ings":[{"product":"Jajko","qty":1.0,"unit":"szt."},{"product":"Skyr","qty":150.0,"unit":"g"},{"product":"Mąka","qty":50.0,"unit":"g"},{"product":"Jabłka","qty":2.0,"unit":"szt."},{"product":"Olej","qty":3.0,"unit":"ml"},{"product":"Masło orzechowe","qty":15.0,"unit":"g"}]},{"id":49,"name":"Kanapka z masłem orzechowym","meal":"Kolacja","kcal":217.4,"f":11.4,"c":21.0,"p":7.7,"desc":"Kanapka z masłem","ings":[{"product":"Chleb","qty":1.0,"unit":"kromka"},{"product":"Masło orzechowe","qty":20.0,"unit":"g"}]},{"id":50,"name":"Pizza z żabki","meal":"Kolacja","kcal":642.8,"f":48.0,"c":30.7,"p":22.0,"desc":"","ings":[{"product":"Pizza z zabki","qty":1.0,"unit":"szt."}]},{"id":51,"name":"Bowl meksykański","meal":"Obiad","kcal":564.0,"f":25.34,"c":42.96,"p":28.99,"desc":"","ings":[{"product":"Bataty","qty":100.0,"unit":"g"},{"product":"Olej","qty":5.0,"unit":"ml"},{"product":"Cebula","qty":50.0,"unit":"g"},{"product":"Mięso mielone z indyka","qty":100.0,"unit":"g"},{"product":"Fasola","qty":45.0,"unit":"g"},{"product":"Koncentrat pomidorowy","qty":25.0,"unit":"g"},{"product":"Pomidor","qty":70.0,"unit":"g"},{"product":"Awokado","qty":0.5,"unit":"szt."},{"product":"limonka","qty":1.0,"unit":"szt"},{"product":"Czosnek","qty":2.0,"unit":"ząbki"},{"product":"Jogurt grecki","qty":20.0,"unit":"g"}]},{"id":52,"name":"Chilaquiles","meal":"Śniadanie","kcal":693.48,"f":32.0,"c":74.45,"p":26.92,"desc":"1 tortilla, 250ml passaty, 1 jajko","ings":[{"product":"Torlilla","qty":1.0,"unit":"szt."},{"product":"Oliwa","qty":15.0,"unit":"ml"},{"product":"Cebula","qty":40.0,"unit":"g"},{"product":"Czosnek","qty":1.0,"unit":"ząbki"},{"product":"Papryczka chipotle","qty":2.0,"unit":"szt."},{"product":"Passata","qty":250.0,"unit":"g"},{"product":"Ser feta","qty":50.0,"unit":"g"},{"product":"Jajko","qty":1.0,"unit":"szt."},{"product":"Awokado","qty":0.5,"unit":"szt."}]},{"id":53,"name":"Smoothie truskawkowo-kokosowe","meal":"Śniadanie","kcal":430.8,"f":21.6,"c":51.1,"p":8.0,"desc":"","ings":[{"product":"Truskawki","qty":150.0,"unit":"g"},{"product":"Banan","qty":1.0,"unit":"szt."},{"product":"Mleko","qty":100.0,"unit":"ml"},{"product":"Mleko kokosowe","qty":100.0,"unit":"ml"}]},{"id":54,"name":"Gniocchi pieczone z pomidorkami","meal":"Obiad","kcal":576.56,"f":15.6,"c":85.65,"p":23.39,"desc":"Gnoczki","ings":[{"product":"Pomdory koktajlowe","qty":250.0,"unit":"g"},{"product":"Czosnek","qty":2.0,"unit":"ząbki"},{"product":"Oliwa","qty":15.0,"unit":"ml"},{"product":"Gnocchi","qty":150.0,"unit":"g"},{"product":"Parmezan","qty":15.0,"unit":"g"},{"product":"Mozarella","qty":50.0,"unit":"g"},{"product":"Bazylia","qty":5.0,"unit":"g"}]},{"id":55,"name":"Jabłko","meal":"Śniadanie","kcal":135.6,"f":1.2,"c":30.0,"p":1.2,"desc":"","ings":[{"product":"Jabłka","qty":1.0,"unit":"szt."},{"product":"Jabłka","qty":1.0,"unit":"szt."}]},{"id":56,"name":"Chipsy z soczewicy","meal":"Kolacja","kcal":176.0,"f":0.0,"c":0.0,"p":0.0,"desc":"","ings":[{"product":"chipsy z soczewicy","qty":1.0,"unit":"szt"}]},{"id":57,"name":"Białko serwatkowe z mlekiem","meal":"Ekstra","kcal":275.6,"f":8.4,"c":11.6,"p":38.4,"desc":"Jedna miarka ze szklanka mleka","ings":[{"product":"Białko serwatkowe","qty":40.0,"unit":"g"},{"product":"Mleko","qty":200.0,"unit":"ml"}]},{"id":58,"name":"One Pot Chicken Alfredo Pasta","meal":"Obiad","kcal":724.74,"f":24.82,"c":76.28,"p":49.06,"desc":"","ings":[{"product":"Pierś z kurczaka","qty":70.0,"unit":"g"},{"product":"Oliwa","qty":5.0,"unit":"ml"},{"product":"Makaron tagiatlle","qty":80.0,"unit":"g"},{"product":"Mleko","qty":160.0,"unit":"ml"},{"product":"Bulion","qty":120.0,"unit":"g"},{"product":"Czosnek","qty":2.0,"unit":"ząbki"},{"product":"Śmietanka słodka 12%","qty":40.0,"unit":"g"},{"product":"Parmezan","qty":40.0,"unit":"g"}]},{"id":59,"name":"Karkówka z warzywami","meal":"Obiad","kcal":1116.73,"f":74.97,"c":57.5,"p":53.0,"desc":"mieso pokrojone w plastry, przesmażone potem pieczone z warzywami","ings":[{"product":"Karkówka","qty":250.0,"unit":"g"},{"product":"Ziemniaki","qty":200.0,"unit":"g"},{"product":"Marchewka","qty":100.0,"unit":"g"},{"product":"Papryka","qty":50.0,"unit":"g"},{"product":"Pieczarki","qty":50.0,"unit":"g"},{"product":"Cebula","qty":100.0,"unit":"g"},{"product":"Olej","qty":30.0,"unit":"ml"}]},{"id":60,"name":"Pyry z gzikiem","meal":"Obiad","kcal":430.49,"f":7.85,"c":64.72,"p":25.24,"desc":"300g ziamniakow;","ings":[{"product":"Ziemniaki","qty":350.0,"unit":"g"},{"product":"Twaróg półtłusty","qty":100.0,"unit":"g"},{"product":"Śmietana 18%","qty":20.0,"unit":"ml"},{"product":"Czosnek","qty":0.5,"unit":"ząbki"},{"product":"Szczypiorek","qty":20.0,"unit":"g"}]},{"id":61,"name":"Kefir","meal":"Ekstra","kcal":208.32,"f":8.4,"c":19.74,"p":13.44,"desc":"1 kefir","ings":[{"product":"Kefir","qty":420.0,"unit":"ml"}]},{"id":62,"name":"sałatka z ciecierzycą","meal":"Kolacja","kcal":706.21,"f":16.45,"c":114.55,"p":25.0,"desc":"przepis z tik toka","ings":[{"product":"Ciecierzyca","qty":270.0,"unit":"g"},{"product":"Pomarańcza","qty":0.25,"unit":"szt."},{"product":"Miód","qty":2.5,"unit":"g"},{"product":"Oliwa","qty":27.0,"unit":"ml"},{"product":"Musztarda","qty":10.0,"unit":"g"},{"product":"Bataty","qty":180.0,"unit":"g"},{"product":"Papryka","qty":150.0,"unit":"g"},{"product":"Sałata","qty":100.0,"unit":"g"},{"product":"Cebula czerwona","qty":30.0,"unit":"g"},{"product":"Ser feta","qty":60.0,"unit":"g"}]},{"id":63,"name":"zupa ogórkowa","meal":"Obiad","kcal":84.53,"f":1.61,"c":14.71,"p":2.8,"desc":"z cookidoo przepis","ings":[{"product":"Ogórek kiszony","qty":50.0,"unit":"g"},{"product":"Marchewka","qty":25.0,"unit":"g"},{"product":"Pietruszka","qty":20.0,"unit":"g"},{"product":"Seler","qty":15.0,"unit":"g"},{"product":"Czosnek","qty":0.25,"unit":"ząbki"},{"product":"Ziemniaki","qty":50.0,"unit":"g"},{"product":"Bulion","qty":3.75,"unit":"g"},{"product":"Śmietana 18%","qty":7.5,"unit":"ml"}]},{"id":64,"name":"Nocna owsianka z owocami leśnymi","meal":"Śniadanie","kcal":464.06,"f":17.22,"c":54.87,"p":22.4,"desc":"Owsianeczka mistrzów","ings":[{"product":"Płatki owsiane","qty":35.0,"unit":"g"},{"product":"Maliny mrożone","qty":100.0,"unit":"g"},{"product":"Mleko","qty":100.0,"unit":"ml"},{"product":"Skyr","qty":75.0,"unit":"g"},{"product":"Masło orzechowe","qty":15.0,"unit":"g"},{"product":"Miód","qty":10.0,"unit":"g"},{"product":"Nasiona chia","qty":10.0,"unit":"g"}]},{"id":65,"name":"Pieczone bataty miso z granatem","meal":"Obiad","kcal":733.4,"f":22.32,"c":119.46,"p":13.67,"desc":"250 g batatów","ings":[{"product":"Bataty","qty":400.0,"unit":"g"},{"product":"Oliwa","qty":15.0,"unit":"ml"},{"product":"Pasta miso","qty":40.0,"unit":"g"},{"product":"Czosnek","qty":1.0,"unit":"ząbki"},{"product":"Miód","qty":10.0,"unit":"g"},{"product":"Limonka","qty":0.25,"unit":"szt"},{"product":"Olej sezamowy","qty":20.0,"unit":"g"},{"product":"Granat","qty":0.25,"unit":"szt."}]},{"id":66,"name":"Ryba z puszki z chlebem","meal":"Kolacja","kcal":444.6,"f":18.6,"c":41.0,"p":28.3,"desc":"Rypka pyszna zdrowa","ings":[{"product":"Ryba z puszki","qty":1.0,"unit":"szt."},{"product":"Chleb","qty":2.0,"unit":"kromka"}]},{"id":67,"name":"mini gofry twarogowe","meal":"Śniadanie","kcal":958.61,"f":20.69,"c":118.7,"p":74.4,"desc":"przepis z tik toka","ings":[{"product":"Twaróg","qty":230.0,"unit":"g"},{"product":"Skyr","qty":110.0,"unit":"g"},{"product":"Mleko","qty":75.0,"unit":"ml"},{"product":"Jajko","qty":1.0,"unit":"szt."},{"product":"Cukier","qty":7.0,"unit":"g"},{"product":"Mąka pszenna","qty":110.0,"unit":"g"},{"product":"Cukier","qty":15.0,"unit":"g"},{"product":"Olej","qty":10.0,"unit":"ml"},{"product":"Proszek do pieczenia","qty":4.0,"unit":"g"},{"product":"soda oczyszczona","qty":4.0,"unit":"g"}]},{"id":68,"name":"Tagiatelle ze szparagami","meal":"Obiad","kcal":737.85,"f":34.85,"c":81.38,"p":24.67,"desc":"Szparagi","ings":[{"product":"Makaron tagiatlle","qty":100.0,"unit":"g"},{"product":"Szalotka","qty":30.0,"unit":"g"},{"product":"Boczek","qty":50.0,"unit":"g"},{"product":"Czosnek","qty":2.0,"unit":"ząbki"},{"product":"Serek śmietankowy","qty":35.0,"unit":"g"},{"product":"Parmezan","qty":10.0,"unit":"g"}]},{"id":69,"name":"Zapiekanki z serem i pieczarkami","meal":"Kolacja","kcal":291.7,"f":10.9,"c":34.75,"p":13.65,"desc":"1 zapiekanka","ings":[{"product":"Chleb tostowy","qty":2.0,"unit":"kromka"},{"product":"Ser żółty","qty":30.0,"unit":"g"},{"product":"Pieczarki","qty":15.0,"unit":"g"}]},{"id":70,"name":"Makaron z truskawkami","meal":"Obiad","kcal":800.5,"f":8.5,"c":150.5,"p":30.5,"desc":"150g makaronu, 300g truskawek","ings":[{"product":"Makaron tagiatlle","qty":150.0,"unit":"g"},{"product":"Truskawki","qty":300.0,"unit":"g"},{"product":"Jogurt","qty":200.0,"unit":"g"},{"product":"Cukier","qty":10.0,"unit":"g"}]},{"id":71,"name":"Sałatka caprese","meal":"Lunch","kcal":520.51,"f":18.5,"c":63.02,"p":25.47,"desc":"z tik toka przepis","ings":[{"product":"Makaron penne","qty":60.0,"unit":"g"},{"product":"Pomdory koktajlowe","qty":150.0,"unit":"g"},{"product":"Mozarella","qty":75.0,"unit":"g"},{"product":"Bazylia","qty":20.0,"unit":"g"},{"product":"Rukola","qty":40.0,"unit":"g"},{"product":"Sos sojowy z cukrem","qty":7.5,"unit":"ml"},{"product":"Oliwa","qty":5.0,"unit":"ml"},{"product":"Limonka","qty":1.0,"unit":"szt"},{"product":"Czosnek","qty":2.0,"unit":"ząbki"}]},{"id":72,"name":"Makaron z bialym serem i kiełbasą","meal":"Obiad","kcal":864.3,"f":21.5,"c":121.5,"p":46.2,"desc":"150g makaronu, 70g kiełbasy, 100g sera białego","ings":[{"product":"Makaron penne","qty":150.0,"unit":"g"},{"product":"Kiełbasa","qty":70.0,"unit":"g"},{"product":"Twaróg","qty":100.0,"unit":"g"},{"product":"Cebula","qty":40.0,"unit":"g"}]}],"products":[{"name":"Ananas","cat":"Owoce","unit":"g","p":0.01,"f":0.0,"c":0.12},{"name":"Arbuz","cat":"Owoce","unit":"g","p":0.01,"f":0.0,"c":0.08},{"name":"Bakłażan","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.06},{"name":"Bataty","cat":"Warzywa","unit":"g","p":0.02,"f":0.0,"c":0.2},{"name":"Batonik","cat":"Słodkości","unit":"g","p":0.04,"f":0.2,"c":0.6},{"name":"Bazylia","cat":"Warzywa","unit":"g","p":0.03,"f":0.01,"c":0.03},{"name":"Biała czekolada","cat":"Słodkości","unit":"g","p":0.06,"f":0.32,"c":0.59},{"name":"Białko serwatkowe","cat":"Inne","unit":"g","p":0.8,"f":0.05,"c":0.05},{"name":"Boczek","cat":"Mięso","unit":"g","p":0.09,"f":0.42,"c":0.01},{"name":"Borówka","cat":"Owoce","unit":"g","p":0.01,"f":0.0,"c":0.15},{"name":"Brokuły","cat":"Warzywa","unit":"g","p":0.03,"f":0.0,"c":0.07},{"name":"Bulion","cat":"Inne","unit":"g","p":0.01,"f":0.01,"c":0.01},{"name":"Bułka tarta","cat":"Pieczywo","unit":"g","p":0.11,"f":0.02,"c":0.72},{"name":"Buraki","cat":"Warzywa","unit":"g","p":0.02,"f":0.0,"c":0.1},{"name":"Camembert","cat":"Nabiał","unit":"g","p":0.2,"f":0.24,"c":0.01},{"name":"Cebula","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.09},{"name":"Ciecierzyca","cat":"Warzywa","unit":"g","p":0.19,"f":0.06,"c":0.61},{"name":"Cukier","cat":"Inne","unit":"g","p":0.0,"f":0.0,"c":1.0},{"name":"Cukinia","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.03},{"name":"Dynia","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.07},{"name":"Dżem","cat":"Inne","unit":"g","p":0.0,"f":0.0,"c":0.68},{"name":"Fasolka szparagowa mrożona","cat":"Mrożonki","unit":"g","p":0.02,"f":0.0,"c":0.07},{"name":"Franfukretki","cat":"Mięso","unit":"g","p":0.11,"f":0.25,"c":0.02},{"name":"Frytki","cat":"Mrożonki","unit":"g","p":0.03,"f":0.05,"c":0.29},{"name":"Fuet","cat":"Mięso","unit":"g","p":0.3,"f":0.38,"c":0.02},{"name":"Granola","cat":"Zbożowe","unit":"g","p":0.1,"f":0.2,"c":0.55},{"name":"Groch","cat":"Warzywa","unit":"g","p":0.25,"f":0.01,"c":0.6},{"name":"Halloumi","cat":"Nabiał","unit":"g","p":0.24,"f":0.25,"c":0.02},{"name":"Imbir","cat":"Warzywa","unit":"g","p":0.02,"f":0.01,"c":0.18},{"name":"Jogurt","cat":"Nabiał","unit":"g","p":0.04,"f":0.02,"c":0.05},{"name":"Jogurt grecki","cat":"Nabiał","unit":"g","p":0.1,"f":0.05,"c":0.04},{"name":"Kalafior","cat":"Warzywa","unit":"g","p":0.02,"f":0.0,"c":0.05},{"name":"Kapusta","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.06},{"name":"Kasza gryczana","cat":"Zbożowe","unit":"g","p":0.13,"f":0.03,"c":0.72},{"name":"Kasza manna","cat":"Zbożowe","unit":"g","p":0.1,"f":0.01,"c":0.73},{"name":"Kiełbasa","cat":"Mięso","unit":"g","p":0.14,"f":0.25,"c":0.02},{"name":"Krewetki mrożone","cat":"Mrożonki","unit":"g","p":0.2,"f":0.01,"c":0.01},{"name":"Kuskus","cat":"Zbożowe","unit":"g","p":0.13,"f":0.01,"c":0.77},{"name":"Kutchup","cat":"Inne","unit":"g","p":0.01,"f":0.0,"c":0.27},{"name":"Łosoś","cat":"Ryby","unit":"g","p":0.2,"f":0.13,"c":0.0},{"name":"Majonez","cat":"Inne","unit":"g","p":0.01,"f":0.79,"c":0.03},{"name":"Makaron Orzo","cat":"Makarony","unit":"g","p":0.12,"f":0.02,"c":0.75},{"name":"Makaron penne","cat":"Makarony","unit":"g","p":0.12,"f":0.02,"c":0.75},{"name":"Makaron rosół","cat":"Makarony","unit":"g","p":0.12,"f":0.02,"c":0.75},{"name":"Makaron Spaghetti","cat":"Makarony","unit":"g","p":0.12,"f":0.02,"c":0.75},{"name":"Makaron tagiatlle","cat":"Makarony","unit":"g","p":0.13,"f":0.03,"c":0.71},{"name":"Maliny mrożone","cat":"Mrożonki","unit":"g","p":0.01,"f":0.01,"c":0.12},{"name":"Marchewka","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.1},{"name":"Mascarpone","cat":"Nabiał","unit":"g","p":0.05,"f":0.47,"c":0.03},{"name":"Masło","cat":"Nabiał","unit":"g","p":0.01,"f":0.82,"c":0.01},{"name":"Masło orzechowe","cat":"Inne","unit":"g","p":0.25,"f":0.5,"c":0.2},{"name":"Mąka","cat":"Zbożowe","unit":"g","p":0.1,"f":0.01,"c":0.74},{"name":"Mąka pszenna","cat":"Zbożowe","unit":"g","p":0.11,"f":0.01,"c":0.72},{"name":"Mieso mielone wolowo-wieprzowe","cat":"Mięso","unit":"g","p":0.18,"f":0.17,"c":0.0},{"name":"Mięso mielone wieprzowe","cat":"Mięso","unit":"g","p":0.17,"f":0.2,"c":0.0},{"name":"Mięso mielone wołowe","cat":"Mięso","unit":"g","p":0.2,"f":0.15,"c":0.0},{"name":"Mięso na tatar","cat":"Mięso","unit":"g","p":0.22,"f":0.08,"c":0.0},{"name":"Mięso wieprzowe na kotlety","cat":"Mięso","unit":"g","p":0.19,"f":0.14,"c":0.0},{"name":"Mięso z łopatki wieprzowej","cat":"Mięso","unit":"g","p":0.18,"f":0.16,"c":0.0},{"name":"Mięso z uda kurczaka (bez kości)","cat":"Mięso","unit":"g","p":0.19,"f":0.11,"c":0.0},{"name":"Miód","cat":"Inne","unit":"g","p":0.0,"f":0.0,"c":0.82},{"name":"Mozarella","cat":"Nabiał","unit":"g","p":0.18,"f":0.22,"c":0.02},{"name":"Musli","cat":"Zbożowe","unit":"g","p":0.1,"f":0.07,"c":0.66},{"name":"Musztarda","cat":"Inne","unit":"g","p":0.06,"f":0.1,"c":0.08},{"name":"Nasiona chia","cat":"Inne","unit":"g","p":0.17,"f":0.31,"c":0.08},{"name":"Nogi z kurczaka","cat":"Mięso","unit":"g","p":0.18,"f":0.16,"c":0.0},{"name":"Ocet","cat":"Inne","unit":"g","p":0.0,"f":0.01,"c":0.0},{"name":"Ogórek","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.04},{"name":"Ogórek kiszony","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.02},{"name":"Oliwki","cat":"Warzywa","unit":"g","p":0.01,"f":0.11,"c":0.06},{"name":"Orzechy","cat":"Inne","unit":"g","p":0.2,"f":0.54,"c":0.21},{"name":"Orzechy włoskie","cat":"Inne","unit":"g","p":0.15,"f":0.65,"c":0.14},{"name":"Owsianka","cat":"Zbożowe","unit":"g","p":0.13,"f":0.07,"c":0.66},{"name":"Papryka","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.06},{"name":"Parmezan","cat":"Nabiał","unit":"g","p":0.36,"f":0.26,"c":0.03},{"name":"Passata","cat":"Inne","unit":"g","p":0.02,"f":0.0,"c":0.07},{"name":"Pasztet","cat":"Mięso","unit":"g","p":0.13,"f":0.2,"c":0.03},{"name":"Pesto","cat":"Inne","unit":"g","p":0.05,"f":0.4,"c":0.05},{"name":"Pieczarki","cat":"Warzywa","unit":"g","p":0.03,"f":0.0,"c":0.03},{"name":"Pierś z kurczaka","cat":"Mięso","unit":"g","p":0.23,"f":0.01,"c":0.0},{"name":"Pietruszka","cat":"Warzywa","unit":"g","p":0.03,"f":0.01,"c":0.08},{"name":"Płatki owsiane","cat":"Zbożowe","unit":"g","p":0.13,"f":0.07,"c":0.66},{"name":"Pomdory koktajlowe","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.04},{"name":"Pomidor","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.04},{"name":"Pomidory z puszki","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.04},{"name":"Por","cat":"Warzywa","unit":"g","p":0.02,"f":0.0,"c":0.14},{"name":"Porcja rosołowa","cat":"Mięso","unit":"g","p":0.17,"f":0.15,"c":0.0},{"name":"Proszek do pieczenia","cat":"Inne","unit":"g","p":0.0,"f":0.0,"c":0.0},{"name":"Przecier pomidorowy","cat":"Warzywa","unit":"g","p":0.02,"f":0.0,"c":0.07},{"name":"Rukola","cat":"Warzywa","unit":"g","p":0.03,"f":0.01,"c":0.04},{"name":"Ryż","cat":"Zbożowe","unit":"g","p":0.07,"f":0.01,"c":0.78},{"name":"Sałata","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.03},{"name":"Schabowy panierowany","cat":"Mięso","unit":"g","p":0.15,"f":0.12,"c":0.15},{"name":"Seler","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.03},{"name":"Ser biały","cat":"Nabiał","unit":"g","p":0.18,"f":0.04,"c":0.04},{"name":"Ser feta","cat":"Nabiał","unit":"g","p":0.14,"f":0.21,"c":0.04},{"name":"Ser żółty","cat":"Nabiał","unit":"g","p":0.26,"f":0.27,"c":0.01},{"name":"Serek śmietankowy","cat":"Nabiał","unit":"g","p":0.06,"f":0.23,"c":0.05},{"name":"Serek wiejski","cat":"Nabiał","unit":"g","p":0.11,"f":0.05,"c":0.03},{"name":"Skyr","cat":"Nabiał","unit":"g","p":0.11,"f":0.0,"c":0.04},{"name":"Słonecznik ziarna","cat":"Inne","unit":"g","p":0.29,"f":0.44,"c":0.19},{"name":"Stek","cat":"Mięso","unit":"g","p":0.26,"f":0.15,"c":0.0},{"name":"Szalotka","cat":"Warzywa","unit":"g","p":0.03,"f":0.0,"c":0.17},{"name":"Szczypiorek","cat":"Warzywa","unit":"g","p":0.03,"f":0.01,"c":0.04},{"name":"Szparagi","cat":"Warzywa","unit":"g","p":0.02,"f":0.0,"c":0.04},{"name":"Szpinak","cat":"Warzywa","unit":"g","p":0.03,"f":0.0,"c":0.04},{"name":"Śmietana 30%","cat":"Nabiał","unit":"g","p":0.02,"f":0.3,"c":0.03},{"name":"Śmietanka słodka 12%","cat":"Nabiał","unit":"g","p":0.03,"f":0.12,"c":0.04},{"name":"Tatar","cat":"Mięso","unit":"g","p":0.22,"f":0.08,"c":0.0},{"name":"Tofu","cat":"Nabiał","unit":"g","p":0.08,"f":0.05,"c":0.02},{"name":"Truskawki","cat":"Owoce","unit":"g","p":0.01,"f":0.0,"c":0.08},{"name":"Twaróg","cat":"Nabiał","unit":"g","p":0.18,"f":0.01,"c":0.04},{"name":"Twaróg półtłusty","cat":"Nabiał","unit":"g","p":0.17,"f":0.04,"c":0.03},{"name":"Udka z kurczaka","cat":"Mięso","unit":"g","p":0.18,"f":0.11,"c":0.0},{"name":"Udon","cat":"Makarony","unit":"g","p":0.03,"f":0.0,"c":0.26},{"name":"Winogrona","cat":"Owoce","unit":"g","p":0.01,"f":0.0,"c":0.18},{"name":"Ziarna kukurydzy","cat":"Inne","unit":"g","p":0.03,"f":0.01,"c":0.19},{"name":"Ziemniaki","cat":"Warzywa","unit":"g","p":0.02,"f":0.0,"c":0.17},{"name":"Żurawina","cat":"Inne","unit":"g","p":0.0,"f":0.0,"c":0.12},{"name":"Chleb","cat":"Pieczywo","unit":"kromka","p":2.7,"f":1.4,"c":17.0},{"name":"Chleb tostowy","cat":"Pieczywo","unit":"kromka","p":2.7,"f":1.4,"c":17.0},{"name":"Bulion w słoiczku","cat":"Inne","unit":"łyżki","p":0.0,"f":0.0,"c":0.0},{"name":"Keczuk","cat":"Inne","unit":"ml","p":0.01,"f":0.0,"c":0.35},{"name":"Olej","cat":"Tłuszcze","unit":"ml","p":0.0,"f":1.0,"c":0.0},{"name":"Sos sojowy z cukrem","cat":"Inne","unit":"ml","p":0.11,"f":0.0,"c":0.06},{"name":"Sos Worcestershire","cat":"Inne","unit":"ml","p":0.01,"f":0.01,"c":0.21},{"name":"Wino czerwone","cat":"Alkohol","unit":"ml","p":0.0,"f":0.0,"c":0.08},{"name":"Woda","cat":"Inne","unit":"ml","p":0.0,"f":0.0,"c":0.0},{"name":"Kefir","cat":"Nabiał","unit":"ml","p":0.03,"f":0.02,"c":0.05},{"name":"Mleko","cat":"Nabiał","unit":"ml","p":0.03,"f":0.03,"c":0.05},{"name":"Mleko kokosowe","cat":"Inne","unit":"ml","p":0.02,"f":0.18,"c":0.08},{"name":"Ocet balsamiczny","cat":"Inne","unit":"ml","p":0.0,"f":0.0,"c":0.01},{"name":"Oliwa","cat":"Tłuszcze","unit":"ml","p":0.0,"f":0.0,"c":1.0},{"name":"Śmietana 18%","cat":"Nabiał","unit":"ml","p":0.02,"f":0.18,"c":0.04},{"name":"Szynka (ok 20g)","cat":"Mięso","unit":"plaster","p":3.4,"f":4.1,"c":0.2},{"name":"Awokado","cat":"Owoce","unit":"szt.","p":2.8,"f":21.4,"c":5.7},{"name":"Bagietka","cat":"Pieczywo","unit":"szt.","p":11.1,"f":1.0,"c":73.9},{"name":"Banan","cat":"Owoce","unit":"szt.","p":1.2,"f":0.4,"c":26.2},{"name":"Broskwinia","cat":"Owoce","unit":"szt.","p":0.9,"f":0.2,"c":8.5},{"name":"Bułka","cat":"Pieczywo","unit":"szt.","p":5.6,"f":3.1,"c":27.9},{"name":"Bułka maślana","cat":"Pieczywo","unit":"szt.","p":8.4,"f":5.3,"c":53.3},{"name":"Burrata","cat":"Nabiał","unit":"szt.","p":17.0,"f":38.4,"c":3.3},{"name":"Cytryna","cat":"Owoce","unit":"szt.","p":0.6,"f":0.2,"c":6.0},{"name":"Granat","cat":"Owoce","unit":"szt.","p":1.7,"f":1.2,"c":18.7},{"name":"Grejpfrut","cat":"Owoce","unit":"szt.","p":1.6,"f":0.5,"c":20.5},{"name":"Gruszki","cat":"Owoce","unit":"szt.","p":0.8,"f":0.3,"c":16.0},{"name":"Jabłka","cat":"Owoce","unit":"szt.","p":0.6,"f":0.6,"c":15.0},{"name":"Jaja strusia","cat":"Nabiał","unit":"szt.","p":0.0,"f":0.0,"c":0.0},{"name":"Jajko","cat":"Nabiał","unit":"szt.","p":6.4,"f":4.9,"c":0.3},{"name":"Kaszka mleczna High Protein - Pilos","cat":"Inne","unit":"szt.","p":16.0,"f":3.0,"c":17.8},{"name":"Kiwi","cat":"Owoce","unit":"szt.","p":0.7,"f":0.4,"c":8.9},{"name":"Mandarynki","cat":"Owoce","unit":"szt.","p":0.4,"f":0.1,"c":6.0},{"name":"Mango","cat":"Owoce","unit":"szt.","p":1.4,"f":0.8,"c":42.8},{"name":"Melon","cat":"Owoce","unit":"szt.","p":3.6,"f":1.0,"c":64.8},{"name":"Ogórki konserowe","cat":"Warzywa","unit":"szt.","p":0.4,"f":0.2,"c":7.0},{"name":"Papryczka chipotle","cat":"Warzywa","unit":"szt.","p":0.2,"f":0.2,"c":0.3},{"name":"Papryczki chilli","cat":"Warzywa","unit":"szt.","p":0.4,"f":0.1,"c":1.8},{"name":"Pita","cat":"Pieczywo","unit":"szt.","p":6.2,"f":0.9,"c":38.4},{"name":"Pizza z zabki","cat":"Mrożonki","unit":"szt.","p":22.0,"f":48.0,"c":30.7},{"name":"Pomarańcza","cat":"Owoce","unit":"szt.","p":2.2,"f":0.5,"c":22.6},{"name":"Rzodkiewka","cat":"Warzywa","unit":"szt.","p":0.2,"f":0.0,"c":0.3},{"name":"Słodka chwila","cat":"Inne","unit":"szt.","p":6.6,"f":1.6,"c":39.2},{"name":"Torlilla","cat":"Zbożowe","unit":"szt.","p":6.0,"f":5.4,"c":31.2},{"name":"Czosnek","cat":"Warzywa","unit":"ząbki","p":0.32,"f":0.1,"c":1.4},{"name":"Mięso mielone z indyka","cat":"Mięso","unit":"g","p":0.17,"f":0.08,"c":0.0},{"name":"Fasola","cat":"Warzywa","unit":"g","p":0.08,"f":0.01,"c":0.12},{"name":"Koncentrat pomidorowy","cat":"Inne","unit":"g","p":0.06,"f":0.01,"c":0.14},{"name":"Limonka","cat":"Owoce","unit":"szt","p":0.01,"f":0.0,"c":0.1},{"name":"Cebula czerwona","cat":"Warzywa","unit":"g","p":0.01,"f":0.0,"c":0.06},{"name":"Gnocchi","cat":"Makarony","unit":"g","p":0.04,"f":0.0,"c":0.38},{"name":"Chipsy z soczewicy","cat":"Przekąski","unit":"szt","p":0.0,"f":0.0,"c":0.0},{"name":"Karkówka","cat":"Mięso","unit":"g","p":0.18,"f":0.18,"c":0.0},{"name":"Pasta miso","cat":"Przyprawy","unit":"g","p":0.12,"f":0.05,"c":0.25},{"name":"Ryba z puszki","cat":"Ryby","unit":"szt.","p":22.9,"f":15.8,"c":7.0},{"name":"Olej sezamowy","cat":"Tłuszcze","unit":"g","p":0.0,"f":1.0,"c":0.0},{"name":"soda oczyszczona","cat":"Inne","unit":"g","p":0.0,"f":0.0,"c":0.0}],"plan":{"wtorek|Śniadanie|Mati":[{"r":49,"n":2.0}],"wtorek|Lunch|Mati":[{"r":64,"n":1.0}],"wtorek|Kolacja|Mati":[{"r":3,"n":1.0}],"wtorek|Kolacja|Chania":[{"r":40,"n":1.0}],"wtorek|Ekstra|Mati":[{"r":61,"n":1.0}],"środa|Śniadanie|Mati":[{"r":64,"n":1.0}],"środa|Śniadanie|Chania":[{"r":7,"n":1.0}],"środa|Lunch|Mati":[{"r":37,"n":1.0}],"środa|Lunch|Chania":[{"r":71,"n":1.0}],"środa|Obiad|Mati":[{"r":70,"n":1.0}],"środa|Obiad|Chania":[{"r":70,"n":1.0}],"środa|Kolacja|Mati":[{"r":49,"n":2.0}],"środa|Kolacja|Chania":[{"r":56,"n":1.0}],"środa|Ekstra|Mati":[{"r":4,"n":1.0}],"czwartek|Śniadanie|Mati":[{"r":26,"n":2.0}],"czwartek|Śniadanie|Chania":[{"r":7,"n":1.0}],"czwartek|Lunch|Mati":[{"r":37,"n":1.0}],"czwartek|Lunch|Chania":[{"r":71,"n":1.0}],"czwartek|Obiad|Mati":[{"r":27,"n":1.0}],"czwartek|Obiad|Chania":[{"r":27,"n":1.0}],"czwartek|Kolacja|Mati":[{"r":3,"n":1.0}],"czwartek|Kolacja|Chania":[{"r":8,"n":1.0}],"piątek|Śniadanie|Mati":[{"r":9,"n":2.0}],"piątek|Śniadanie|Chania":[{"r":9,"n":1.0}],"piątek|Lunch|Mati":[{"r":37,"n":1.0}],"piątek|Lunch|Chania":[{"r":8,"n":1.0}],"piątek|Obiad|Mati":[{"r":47,"n":1.0}],"piątek|Obiad|Chania":[{"r":47,"n":1.0}],"piątek|Ekstra|Mati":[{"r":4,"n":1}],"niedziela|Kolacja|Mati":[{"r":7,"n":3.0}],"niedziela|Kolacja|Chania":[{"r":7,"n":2.0}],"poniedziałek|Śniadanie|Mati":[{"r":64,"n":1.0}],"poniedziałek|Śniadanie|Chania":[{"r":6,"n":1.0}],"poniedziałek|Lunch|Mati":[{"r":37,"n":1.0}],"poniedziałek|Lunch|Chania":[{"r":8,"n":1.0}],"poniedziałek|Obiad|Mati":[{"r":72,"n":1.0}],"poniedziałek|Obiad|Chania":[{"r":72,"n":1.0}],"poniedziałek|Kolacja|Mati":[{"r":49,"n":2.0}],"poniedziałek|Ekstra|Mati":[{"r":4,"n":1.0}],"wtorek|Śniadanie|Chania":[{"r":6,"n":0.5}]},"targets":{"Mati":{"kcal":2400,"p":180},"Chania":{"kcal":1600,"p":90}},"weekStart":"2026-05-12"};
+</script>
+<script>
+/* ================= STATE ================= */
+const DAYS=['poniedziałek','wtorek','środa','czwartek','piątek','sobota','niedziela'];
+const DAYS_SHORT=['Pon','Wt','Śr','Czw','Pt','Sob','Ndz'];
+const MEALS=['Śniadanie','Lunch','Obiad','Kolacja','Ekstra'];
+const PERSONS=['Mati','Chania'];
+const CATS=['Warzywa','Owoce','Mięso','Nabiał','Pieczywo','Makarony','Zbożowe','Mrożonki','Słodkości','Tłuszcze','Inne'];
+let S=null, archive=[], curDay=(new Date().getDay()+6)%7, curTab='plan', saveTimer=null;
+
+const kcalOf=m=>Math.round(4*(m.p+m.c)+9*m.f);
+const r1=x=>Math.round(x*10)/10;
+const fmtQ=(q,u)=>{let v=r1(q);return `${(''+v).replace('.',',')} ${u}`};
+
+async function loadState(){
+  try{const r=await window.storage.get('diet:data');if(r&&r.value){S=JSON.parse(r.value)}}catch(e){}
+  if(!S){S=JSON.parse(JSON.stringify(SEED));S.checked={};persist()}
+  if(!S.checked)S.checked={};
+  try{const a=await window.storage.get('diet:archive');if(a&&a.value)archive=JSON.parse(a.value)}catch(e){}
+}
+function persist(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    try{
+      await window.storage.set('diet:data',JSON.stringify(S));
+      const f=document.getElementById('saveflag');f.classList.add('on');setTimeout(()=>f.classList.remove('on'),1500);
+    }catch(e){toast('Błąd zapisu — spróbuj ponownie')}
+  },500);
+}
+async function persistArchive(){try{await window.storage.set('diet:archive',JSON.stringify(archive))}catch(e){toast('Błąd zapisu archiwum')}}
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),2200)}
+
+const recipeById=id=>S.recipes.find(r=>r.id===id);
+const productByName=n=>S.products.find(p=>p.name===n);
+
+function recipeMacrosFromIngs(r){
+  let p=0,f=0,c=0;
+  for(const ing of (r.ings||[])){
+    const pr=productByName(ing.product);
+    if(!pr)continue;
+    p+=pr.p*ing.qty;f+=pr.f*ing.qty;c+=pr.c*ing.qty;
+  }
+  return {p:r1(p),f:r1(f),c:r1(c),kcal:kcalOf({p,f,c})};
+}
+function dayTotals(di,person){
+  let t={kcal:0,p:0,f:0,c:0};
+  for(const meal of MEALS){
+    const cell=S.plan[`${DAYS[di]}|${meal}|${person}`]||[];
+    for(const e of cell){const r=recipeById(e.r);if(!r)continue;
+      t.kcal+=r.kcal*e.n;t.p+=r.p*e.n;t.f+=r.f*e.n;t.c+=r.c*e.n}
+  }
+  return t;
+}
+
+/* ================= NAV ================= */
+const TABS=[
+ ['plan','Plan','<path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="none" stroke-width="2" stroke-linecap="round"/>'],
+ ['recipes','Przepisy','<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'],
+ ['products','Produkty','<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6zM3 6h18M16 10a4 4 0 0 1-8 0" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'],
+ ['shop','Zakupy','<circle cx="9" cy="21" r="1.6" fill="none" stroke-width="2"/><circle cx="20" cy="21" r="1.6" fill="none" stroke-width="2"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'],
+ ['calc','Porcje','<rect x="4" y="2" width="16" height="20" rx="2" fill="none" stroke-width="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h.01M16 19h.01" stroke-width="2" stroke-linecap="round"/>'],
+ ['arch','Archiwum','<path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'],
+ ['set','Cele','<circle cx="12" cy="12" r="3" fill="none" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>']
+];
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=TABS.map(([id,label,icon])=>
+    `<button class="tab ${curTab===id?'on':''}" onclick="go('${id}')"><svg viewBox="0 0 24 24">${icon}</svg>${label}</button>`).join('');
+}
+function go(t){curTab=t;renderTabs();render()}
+
+/* ================= PLAN VIEW ================= */
+function personColor(p){return p==='Mati'?'var(--mati)':'var(--chania)'}
+function viewPlan(){
+  const week=DAYS.map((d,i)=>{
+    const tm=dayTotals(i,'Mati'),th=dayTotals(i,'Chania');
+    const pct=Math.min(100,Math.round(100*(tm.kcal+th.kcal)/((S.targets.Mati.kcal+S.targets.Chania.kcal)||1)));
+    return `<div class="wd ${i===curDay?'on':''}" onclick="setDay(${i})"><div class="dn2">${DAYS_SHORT[i]}</div><div class="mini"><i style="width:${pct}%"></i></div></div>`;
+  }).join('');
+  const gauges=PERSONS.map(p=>{
+    const t=dayTotals(curDay,p),tg=S.targets[p];
+    const kp=Math.min(100,Math.round(100*t.kcal/(tg.kcal||1)));
+    const pp=Math.min(100,Math.round(100*t.p/(tg.p||1)));
+    const over=t.kcal>tg.kcal*1.05;
+    return `<div class="gauge">
+      <div class="who"><span class="dot" style="background:${personColor(p)}"></span>${p}</div>
+      <div class="glabel" style="margin-top:7px"><span>Kalorie</span><span><b style="color:${over?'var(--red)':'var(--ink)'}">${Math.round(t.kcal)}</b> / ${tg.kcal} kcal</span></div>
+      <div class="gbar"><i style="width:${kp}%;background:${over?'var(--red)':personColor(p)}"></i></div>
+      <div class="glabel"><span>Białko</span><span><b>${Math.round(t.p)}</b> / ${tg.p} g</span></div>
+      <div class="gbar"><i style="width:${pp}%;background:var(--honey)"></i></div>
+      <div class="macmini"><span>Tłuszcz <b>${Math.round(t.f)} g</b></span><span>Węgle <b>${Math.round(t.c)} g</b></span></div>
+    </div>`;
+  }).join('');
+  const meals=MEALS.map(meal=>{
+    const persons=PERSONS.map(p=>{
+      const key=`${DAYS[curDay]}|${meal}|${p}`;
+      const cell=S.plan[key]||[];
+      const dishes=cell.map((e,ei)=>{
+        const r=recipeById(e.r);if(!r)return'';
+        return `<div class="dish">
+          <div class="grow"><div class="dn">${esc(r.name)}</div><div class="dm">${Math.round(r.kcal*e.n)} kcal · B ${Math.round(r.p*e.n)} g</div></div>
+          <div class="step"><button onclick="chPortion('${key}',${ei},-0.5)">−</button><span>${(''+e.n).replace('.',',')}</span><button onclick="chPortion('${key}',${ei},0.5)">+</button></div>
+          <button class="xbtn" onclick="rmDish('${key}',${ei})">×</button>
+        </div>`;
+      }).join('');
+      return `<div class="mperson">
+        <div class="mp-h" style="color:${personColor(p)}"><span class="dot" style="background:${personColor(p)}"></span>${p}</div>
+        ${dishes}
+        <button class="addd" onclick="openPicker('${key}','${meal}')">+ dodaj danie</button>
+      </div>`;
+    }).join('');
+    return `<div class="meal"><div class="meal-h">${meal}</div>${persons}</div>`;
+  }).join('');
+  return `<div class="week">${week}</div>
+    <h2 class="section-title" style="margin-top:4px">${DAYS[curDay].charAt(0).toUpperCase()+DAYS[curDay].slice(1)}</h2>
+    <div class="gauges">${gauges}</div>${meals}
+    <div class="row" style="margin-top:14px">
+      <button class="btn ghost sm" onclick="copyDay()">Kopiuj dzień na jutro</button>
+      <button class="btn danger sm" onclick="clearDay()">Wyczyść dzień</button>
+    </div>`;
+}
+function setDay(i){curDay=i;render()}
+function chPortion(key,i,d){const c=S.plan[key];if(!c||!c[i])return;c[i].n=Math.max(0.5,r1(c[i].n+d));persist();render()}
+function rmDish(key,i){S.plan[key].splice(i,1);if(!S.plan[key].length)delete S.plan[key];persist();render()}
+function copyDay(){
+  const next=(curDay+1)%7;
+  for(const meal of MEALS)for(const p of PERSONS){
+    const src=S.plan[`${DAYS[curDay]}|${meal}|${p}`];
+    const dk=`${DAYS[next]}|${meal}|${p}`;
+    if(src&&src.length)S.plan[dk]=JSON.parse(JSON.stringify(src));else delete S.plan[dk];
+  }
+  persist();toast(`Skopiowano na ${DAYS[next]}`);
+}
+function clearDay(){
+  if(!confirm(`Wyczyścić cały ${DAYS[curDay]}?`))return;
+  for(const meal of MEALS)for(const p of PERSONS)delete S.plan[`${DAYS[curDay]}|${meal}|${p}`];
+  persist();render();
+}
+
+/* dish picker */
+let pickerKey=null,pickerMeal=null,pickerAll=false,pickerQ='';
+function openPicker(key,meal){pickerKey=key;pickerMeal=meal;pickerAll=false;pickerQ='';showModal(pickerHTML());setTimeout(()=>{const i=document.getElementById('pickq');if(i)i.focus()},50)}
+function pickerHTML(){
+  const q=pickerQ.toLowerCase();
+  let list=S.recipes.filter(r=>(pickerAll||r.meal===pickerMeal)&&(!q||r.name.toLowerCase().includes(q)));
+  list.sort((a,b)=>a.name.localeCompare(b.name,'pl'));
+  const items=list.map(r=>`<div class="pick" onclick="pickDish(${r.id})">
+      <div><div class="pn">${esc(r.name)}</div><div class="pm">${Math.round(r.kcal)} kcal · B ${Math.round(r.p)} g · T ${Math.round(r.f)} g · W ${Math.round(r.c)} g</div></div>
+      <span class="tag">${esc(r.meal)}</span></div>`).join('')||'<div class="empty">Brak dań. Zmień filtr lub dodaj przepis w zakładce Przepisy.</div>';
+  return `<div class="modal-h"><h3>Wybierz danie — ${esc(pickerMeal)}</h3><button class="xbtn" onclick="closeModal()">×</button></div>
+    <div class="modal-b">
+      <div class="searchbox"><input id="pickq" placeholder="Szukaj dania…" value="${esc(pickerQ)}" oninput="pickerQ=this.value;refreshPicker()"></div>
+      <div class="pillrow">
+        <button class="pill ${!pickerAll?'on':''}" onclick="pickerAll=false;refreshPicker()">Tylko ${esc(pickerMeal)}</button>
+        <button class="pill ${pickerAll?'on':''}" onclick="pickerAll=true;refreshPicker()">Wszystkie dania</button>
+      </div>
+      <div id="picklist">${items}</div>
+    </div>`;
+}
+function refreshPicker(){const m=document.getElementById('modal');const sc=m.querySelector('.modal-b').scrollTop;m.innerHTML=pickerHTML();m.querySelector('.modal-b').scrollTop=sc;const i=document.getElementById('pickq');i.focus();i.setSelectionRange(i.value.length,i.value.length)}
+function pickDish(id){
+  if(!S.plan[pickerKey])S.plan[pickerKey]=[];
+  S.plan[pickerKey].push({r:id,n:1});
+  persist();closeModal();render();
+}
+
+/* ================= RECIPES ================= */
+let recQ='',recFilter='Wszystkie';
+function viewRecipes(){
+  const q=recQ.toLowerCase();
+  let list=S.recipes.filter(r=>(recFilter==='Wszystkie'||r.meal===recFilter)&&(!q||r.name.toLowerCase().includes(q)));
+  list.sort((a,b)=>a.name.localeCompare(b.name,'pl'));
+  const pills=['Wszystkie',...MEALS].map(m=>`<button class="pill ${recFilter===m?'on':''}" onclick="recFilter='${m}';render()">${m}</button>`).join('');
+  const cards=list.map(r=>{
+    const ings=(r.ings||[]).map(i=>`<li><span>${esc(i.product)}</span><span class="muted">${fmtQ(i.qty,i.unit)}</span></li>`).join('');
+    return `<div class="rcard">
+      <div class="row"><div class="grow"><div class="rn">${esc(r.name)}</div>
+        <div class="rmac"><span><b>${Math.round(r.kcal)}</b> kcal</span><span>B <b>${Math.round(r.p)}</b> g</span><span>T <b>${Math.round(r.f)}</b> g</span><span>W <b>${Math.round(r.c)}</b> g</span></div>
+        ${r.desc?`<div class="rdesc">${esc(r.desc)}</div>`:''}</div>
+        <span class="tag">${esc(r.meal)}</span></div>
+      <div class="row" style="margin-top:9px">
+        ${(r.ings&&r.ings.length)?`<button class="btn ghost sm" onclick="this.closest('.rcard').querySelector('.ringlist').classList.toggle('open')">Składniki (${r.ings.length})</button>`:''}
+        <button class="btn sec sm" onclick="editRecipe(${r.id})">Edytuj</button>
+        <button class="btn danger sm" onclick="delRecipe(${r.id})">Usuń</button>
+      </div>
+      ${ings?`<ul class="ringlist">${ings}</ul>`:''}
+    </div>`;
+  }).join('')||'<div class="empty">Brak przepisów dla tego filtra.</div>';
+  return `<div class="row" style="margin-bottom:10px">
+      <input class="grow" placeholder="Szukaj przepisu…" value="${esc(recQ)}" oninput="recQ=this.value;renderMainOnly()">
+      <button class="btn" onclick="editRecipe(null)">+ Nowy</button></div>
+    <div class="pillrow">${pills}</div><div id="reclist">${cards}</div>`;
+}
+let editIngs=[];
+function editRecipe(id){
+  const r=id?recipeById(id):{id:null,name:'',meal:'Obiad',kcal:0,p:0,f:0,c:0,desc:'',ings:[]};
+  editIngs=JSON.parse(JSON.stringify(r.ings||[]));
+  const prodOpts=S.products.slice().sort((a,b)=>a.name.localeCompare(b.name,'pl'));
+  showModal(`<div class="modal-h"><h3>${id?'Edytuj przepis':'Nowy przepis'}</h3><button class="xbtn" onclick="closeModal()">×</button></div>
+  <div class="modal-b">
+    <div class="field"><label>Nazwa dania</label><input id="e_name" value="${esc(r.name)}"></div>
+    <div class="f2">
+      <div class="field"><label>Posiłek</label><select id="e_meal">${MEALS.map(m=>`<option ${r.meal===m?'selected':''}>${m}</option>`).join('')}</select></div>
+      <div class="field"><label>Kalorie (1 porcja)</label><input id="e_kcal" type="number" step="1" value="${Math.round(r.kcal)}"></div>
+    </div>
+    <div class="field"><label>Makro na porcję [g]</label>
+      <div class="f4" style="grid-template-columns:repeat(3,1fr)">
+        <input id="e_p" type="number" step="0.1" value="${r.p}" placeholder="Białko"><input id="e_f" type="number" step="0.1" value="${r.f}" placeholder="Tłuszcz"><input id="e_c" type="number" step="0.1" value="${r.c}" placeholder="Węgle">
+      </div>
+      <div class="muted" style="font-size:11px;margin-top:3px">Białko · Tłuszcz · Węglowodany</div></div>
+    <div class="field"><label>Opis / porcjowanie</label><textarea id="e_desc" rows="2">${esc(r.desc||'')}</textarea></div>
+    <div class="field"><label>Składniki (na 1 porcję)</label><div id="e_ings"></div>
+      <div class="row" style="margin-top:6px">
+        <button class="btn ghost sm" onclick="editIngs.push({product:'',qty:100,unit:'g'});drawIngs()">+ składnik</button>
+        <button class="btn sec sm" onclick="recalcFromIngs()">Przelicz makro ze składników</button>
+      </div></div>
+  </div>
+  <div class="modal-f"><button class="btn ghost grow" onclick="closeModal()">Anuluj</button><button class="btn grow" onclick="saveRecipe(${id||'null'})">Zapisz</button></div>`);
+  window._prodOpts=prodOpts;drawIngs();
+}
+function drawIngs(){
+  const box=document.getElementById('e_ings');if(!box)return;
+  box.innerHTML=editIngs.map((ing,i)=>`<div class="inge">
+    <select onchange="editIngs[${i}].product=this.value;syncUnit(${i},this.value)">
+      <option value="">— produkt —</option>
+      ${window._prodOpts.map(p=>`<option ${ing.product===p.name?'selected':''}>${esc(p.name)}</option>`).join('')}
+    </select>
+    <input class="q" type="number" step="0.1" value="${ing.qty}" onchange="editIngs[${i}].qty=parseFloat(this.value)||0">
+    <span class="muted" style="font-size:12px;min-width:38px" id="unit${i}">${esc(ing.unit)}</span>
+    <button class="xbtn" onclick="editIngs.splice(${i},1);drawIngs()">×</button>
+  </div>`).join('')||'<div class="muted" style="font-size:13px">Brak składników — makro wpisujesz ręcznie.</div>';
+}
+function syncUnit(i,name){const p=productByName(name);if(p){editIngs[i].unit=p.unit;document.getElementById('unit'+i).textContent=p.unit}}
+function recalcFromIngs(){
+  const m=recipeMacrosFromIngs({ings:editIngs.filter(i=>i.product)});
+  document.getElementById('e_p').value=m.p;document.getElementById('e_f').value=m.f;
+  document.getElementById('e_c').value=m.c;document.getElementById('e_kcal').value=m.kcal;
+  toast('Makro przeliczone ze składników');
+}
+function saveRecipe(id){
+  const name=document.getElementById('e_name').value.trim();
+  if(!name){toast('Podaj nazwę dania');return}
+  const data={name,meal:document.getElementById('e_meal').value,
+    kcal:parseFloat(document.getElementById('e_kcal').value)||0,
+    p:parseFloat(document.getElementById('e_p').value)||0,
+    f:parseFloat(document.getElementById('e_f').value)||0,
+    c:parseFloat(document.getElementById('e_c').value)||0,
+    desc:document.getElementById('e_desc').value.trim(),
+    ings:editIngs.filter(i=>i.product&&i.qty>0)};
+  if(id){Object.assign(recipeById(id),data)}
+  else{data.id=Math.max(0,...S.recipes.map(r=>r.id))+1;S.recipes.push(data)}
+  persist();closeModal();render();toast('Przepis zapisany');
+}
+function delRecipe(id){
+  const used=Object.values(S.plan).some(cell=>cell.some(e=>e.r===id));
+  if(!confirm(used?'To danie jest w planie tygodnia — usunąć mimo to?':'Usunąć przepis?'))return;
+  S.recipes=S.recipes.filter(r=>r.id!==id);
+  for(const k of Object.keys(S.plan)){S.plan[k]=S.plan[k].filter(e=>e.r!==id);if(!S.plan[k].length)delete S.plan[k]}
+  persist();render();
+}
+
+/* ================= PRODUCTS ================= */
+let prodQ='';
+function viewProducts(){
+  const q=prodQ.toLowerCase();
+  let list=S.products.filter(p=>!q||p.name.toLowerCase().includes(q));
+  list.sort((a,b)=>a.name.localeCompare(b.name,'pl'));
+  const rows=list.map((p)=>`<tr>
+    <td><b>${esc(p.name)}</b><div class="muted" style="font-size:11px">${esc(p.cat)}</div></td>
+    <td class="muted">${esc(p.unit)}</td>
+    <td>${p.p}</td><td>${p.f}</td><td>${p.c}</td>
+    <td><button class="btn sec sm" onclick="editProduct('${esc(p.name).replace(/'/g,"\\'")}')">Edytuj</button></td>
+  </tr>`).join('');
+  return `<div class="row" style="margin-bottom:10px">
+      <input class="grow" placeholder="Szukaj produktu…" value="${esc(prodQ)}" oninput="prodQ=this.value;renderMainOnly()">
+      <button class="btn" onclick="editProduct(null)">+ Nowy</button></div>
+    <div class="card" style="padding:6px 10px;overflow-x:auto">
+    <table class="ptable"><thead><tr><th>Produkt</th><th>Jedn.</th><th>B/j</th><th>T/j</th><th>W/j</th><th></th></tr></thead>
+    <tbody>${rows}</tbody></table></div>
+    <div class="muted" style="font-size:12px">B/T/W na jednostkę (dla „g" i „ml" — na 1 g/ml, czyli wartość na 100 podzielona przez 100).</div>`;
+}
+function editProduct(name){
+  const p=name?productByName(name):{name:'',cat:'Inne',unit:'g',p:0,f:0,c:0};
+  showModal(`<div class="modal-h"><h3>${name?'Edytuj produkt':'Nowy produkt'}</h3><button class="xbtn" onclick="closeModal()">×</button></div>
+  <div class="modal-b">
+    <div class="field"><label>Nazwa</label><input id="p_name" value="${esc(p.name)}"></div>
+    <div class="f2">
+      <div class="field"><label>Kategoria</label><select id="p_cat">${CATS.map(c=>`<option ${p.cat===c?'selected':''}>${c}</option>`).join('')}</select></div>
+      <div class="field"><label>Jednostka</label><input id="p_unit" value="${esc(p.unit)}" placeholder="g / ml / szt. / kromka"></div>
+    </div>
+    <div class="field"><label>Makro na 1 jednostkę [g]</label>
+      <div class="f4" style="grid-template-columns:repeat(3,1fr)">
+        <input id="p_p" type="number" step="0.01" value="${p.p}" placeholder="Białko"><input id="p_f" type="number" step="0.01" value="${p.f}" placeholder="Tłuszcz"><input id="p_c" type="number" step="0.01" value="${p.c}" placeholder="Węgle">
+      </div>
+      <div class="muted" style="font-size:11px;margin-top:3px">Dla „g"/„ml": wartość na 100 g ÷ 100 (np. 20 g białka/100 g → 0,2)</div></div>
+  </div>
+  <div class="modal-f">
+    ${name?`<button class="btn danger" onclick="delProduct('${esc(name).replace(/'/g,"\\'")}')">Usuń</button>`:''}
+    <button class="btn ghost grow" onclick="closeModal()">Anuluj</button><button class="btn grow" onclick="saveProduct(${name?`'${esc(name).replace(/'/g,"\\'")}'`:'null'})">Zapisz</button></div>`);
+}
+function saveProduct(oldName){
+  const name=document.getElementById('p_name').value.trim();
+  if(!name){toast('Podaj nazwę');return}
+  const data={name,cat:document.getElementById('p_cat').value,unit:document.getElementById('p_unit').value.trim()||'g',
+    p:parseFloat(document.getElementById('p_p').value)||0,f:parseFloat(document.getElementById('p_f').value)||0,c:parseFloat(document.getElementById('p_c').value)||0};
+  if(oldName){
+    Object.assign(productByName(oldName),data);
+    if(oldName!==name)for(const r of S.recipes)for(const i of (r.ings||[]))if(i.product===oldName)i.product=name;
+  }else{
+    if(productByName(name)){toast('Taki produkt już istnieje');return}
+    S.products.push(data);
+  }
+  persist();closeModal();render();toast('Produkt zapisany');
+}
+function delProduct(name){
+  const used=S.recipes.some(r=>(r.ings||[]).some(i=>i.product===name));
+  if(!confirm(used?'Produkt jest używany w przepisach — usunąć mimo to?':'Usunąć produkt?'))return;
+  S.products=S.products.filter(p=>p.name!==name);
+  persist();closeModal();render();
+}
+
+/* ================= SHOPPING ================= */
+function buildShopping(){
+  const agg={};
+  for(const key of Object.keys(S.plan)){
+    for(const e of S.plan[key]){
+      const r=recipeById(e.r);if(!r)continue;
+      for(const ing of (r.ings||[])){
+        const k=ing.product+'|'+ing.unit;
+        if(!agg[k])agg[k]={product:ing.product,unit:ing.unit,qty:0};
+        agg[k].qty+=ing.qty*e.n;
+      }
+    }
+  }
+  return Object.values(agg);
+}
+function viewShop(){
+  const items=buildShopping();
+  if(!items.length)return '<div class="empty">Plan tygodnia jest pusty — dodaj dania w zakładce Plan, a lista zakupów zbuduje się sama.</div>';
+  const byCat={};
+  for(const it of items){
+    const p=productByName(it.product);
+    const cat=(p&&p.cat)||'Inne';
+    (byCat[cat]=byCat[cat]||[]).push(it);
+  }
+  const catOrder=CATS.filter(c=>byCat[c]).concat(Object.keys(byCat).filter(c=>!CATS.includes(c)));
+  let done=0;
+  const html=catOrder.map(cat=>{
+    const rows=byCat[cat].sort((a,b)=>a.product.localeCompare(b.product,'pl')).map(it=>{
+      const id=it.product+'|'+it.unit;
+      const ch=!!S.checked[id];if(ch)done++;
+      return `<div class="shopitem ${ch?'done':''}" onclick="toggleShop('${id.replace(/'/g,"\\'")}')">
+        <div class="chk">${ch?'✓':''}</div><div class="sn">${esc(it.product)}</div><div class="sq">${fmtQ(it.qty,it.unit)}</div></div>`;
+    }).join('');
+    return `<div class="shopcat">${esc(cat)}</div>${rows}`;
+  }).join('');
+  return `<div class="row" style="margin-bottom:4px">
+      <div class="grow muted" style="font-size:13px">Zbudowana z planu tygodnia · ${items.length} pozycji</div>
+      <button class="btn ghost sm" onclick="copyShop()">Kopiuj listę</button>
+      <button class="btn sec sm" onclick="S.checked={};persist();render()">Odznacz</button>
+    </div>${html}`;
+}
+function toggleShop(id){S.checked[id]=!S.checked[id];persist();render()}
+function copyShop(){
+  const items=buildShopping();
+  const byCat={};
+  for(const it of items){const p=productByName(it.product);const c=(p&&p.cat)||'Inne';(byCat[c]=byCat[c]||[]).push(it)}
+  let txt='LISTA ZAKUPÓW\n';
+  for(const c of Object.keys(byCat)){txt+='\n'+c.toUpperCase()+'\n';for(const it of byCat[c].sort((a,b)=>a.product.localeCompare(b.product,'pl')))txt+=`• ${it.product} — ${fmtQ(it.qty,it.unit)}\n`}
+  navigator.clipboard.writeText(txt).then(()=>toast('Lista skopiowana do schowka')).catch(()=>toast('Nie udało się skopiować'));
+}
+
+/* ================= PORTION CALC ================= */
+let calcDish=null,calcN=1;
+function viewCalc(){
+  const opts=S.recipes.slice().sort((a,b)=>a.name.localeCompare(b.name,'pl'))
+    .map(r=>`<option value="${r.id}" ${calcDish===r.id?'selected':''}>${esc(r.name)}</option>`).join('');
+  let out='';
+  if(calcDish){
+    const r=recipeById(calcDish);
+    if(r&&r.ings&&r.ings.length){
+      const lines=r.ings.map(i=>`${fmtQ(i.qty*calcN,i.unit).padEnd(14)} ${i.product}`).join('\n');
+      out=`<div class="calc-out">${esc((''+calcN).replace('.',','))} × ${esc(r.name)}\n${'—'.repeat(26)}\n${esc(lines)}\n${'—'.repeat(26)}\n${Math.round(r.kcal*calcN)} kcal · B ${Math.round(r.p*calcN)} g · T ${Math.round(r.f*calcN)} g · W ${Math.round(r.c*calcN)} g</div>
+      <button class="btn ghost sm" style="margin-top:10px" onclick="copyCalc()">Kopiuj</button>`;
+    }else if(r){
+      out=`<div class="calc-out">${esc(r.name)} — brak listy składników.\n${Math.round(r.kcal*calcN)} kcal · B ${Math.round(r.p*calcN)} g · T ${Math.round(r.f*calcN)} g · W ${Math.round(r.c*calcN)} g</div>`;
+    }
+  }
+  return `<div class="card">
+    <div class="field"><label>Danie</label><select onchange="calcDish=parseInt(this.value)||null;render()"><option value="">— wybierz danie —</option>${opts}</select></div>
+    <div class="field"><label>Liczba porcji</label>
+      <div class="row"><div class="step" style="transform:scale(1.25);transform-origin:left"><button onclick="calcN=Math.max(0.5,r1(calcN-0.5));render()">−</button><span>${(''+calcN).replace('.',',')}</span><button onclick="calcN=r1(calcN+0.5);render()">+</button></div></div></div>
+  </div>${out}`;
+}
+function copyCalc(){
+  const r=recipeById(calcDish);if(!r)return;
+  let txt=`${(''+calcN).replace('.',',')} × ${r.name}\n`;
+  for(const i of r.ings)txt+=`• ${i.product} — ${fmtQ(i.qty*calcN,i.unit)}\n`;
+  navigator.clipboard.writeText(txt).then(()=>toast('Skopiowano')).catch(()=>toast('Nie udało się skopiować'));
+}
+
+/* ================= ARCHIVE ================= */
+function viewArch(){
+  const items=archive.slice().reverse().map((a,idx)=>{
+    const i=archive.length-1-idx;
+    const n=Object.values(a.plan).reduce((s,c)=>s+c.length,0);
+    return `<div class="card"><div class="row">
+      <div class="grow"><b style="font-family:var(--disp)">Tydzień od ${esc(a.weekStart||'—')}</b>
+        <div class="muted" style="font-size:12px">zapisano ${esc(a.savedAt)} · ${n} pozycji w planie</div></div>
+      <button class="btn sec sm" onclick="restoreArch(${i})">Przywróć</button>
+      <button class="btn danger sm" onclick="delArch(${i})">Usuń</button>
+    </div></div>`;
+  }).join('')||'<div class="empty">Archiwum jest puste. Po skończonym tygodniu zapisz plan poniżej.</div>';
+  return `<div class="card" style="background:var(--green-soft);border-color:var(--green)">
+    <b style="font-family:var(--disp)">Zakończ tydzień</b>
+    <div class="muted" style="font-size:13px;margin:4px 0 10px">Zapisuje obecny plan do archiwum i czyści siatkę na nowy tydzień. Lista zaznaczonych zakupów też się wyczyści.</div>
+    <button class="btn" onclick="archiveWeek()">Zapisz tydzień do archiwum</button>
+  </div>${items}`;
+}
+function archiveWeek(){
+  if(!Object.keys(S.plan).length){toast('Plan jest pusty');return}
+  const d=new Date();
+  archive.push({savedAt:d.toLocaleDateString('pl-PL'),weekStart:S.weekStart||'',plan:JSON.parse(JSON.stringify(S.plan))});
+  S.plan={};S.checked={};
+  const monday=new Date();monday.setDate(monday.getDate()+((8-monday.getDay())%7||7));
+  S.weekStart=monday.toISOString().slice(0,10);
+  persist();persistArchive();render();toast('Tydzień zapisany w archiwum');
+}
+function restoreArch(i){
+  if(!confirm('Przywrócić ten tydzień? Obecny plan zostanie nadpisany.'))return;
+  S.plan=JSON.parse(JSON.stringify(archive[i].plan));S.checked={};
+  persist();go('plan');toast('Plan przywrócony');
+}
+function delArch(i){if(!confirm('Usunąć wpis z archiwum?'))return;archive.splice(i,1);persistArchive();render()}
+
+/* ================= SETTINGS ================= */
+function viewSet(){
+  return `<div class="card">
+    <b style="font-family:var(--disp)">Cele dzienne</b>
+    ${PERSONS.map(p=>`<div style="margin-top:12px">
+      <div class="mp-h" style="color:${personColor(p)}"><span class="dot" style="background:${personColor(p)}"></span>${p}</div>
+      <div class="f2">
+        <div class="field"><label>Kalorie [kcal]</label><input type="number" value="${S.targets[p].kcal}" onchange="S.targets['${p}'].kcal=parseInt(this.value)||0;persist();"></div>
+        <div class="field"><label>Białko [g]</label><input type="number" value="${S.targets[p].p}" onchange="S.targets['${p}'].p=parseInt(this.value)||0;persist();"></div>
+      </div></div>`).join('')}
+  </div>
+  <div class="card">
+    <div class="field"><label>Początek tygodnia (data)</label><input type="date" value="${esc(S.weekStart||'')}" onchange="S.weekStart=this.value;persist()"></div>
+  </div>
+  <div class="card">
+    <b style="font-family:var(--disp)">Dane</b>
+    <div class="muted" style="font-size:13px;margin:4px 0 10px">Wszystko zapisuje się automatycznie i zostaje między sesjami.</div>
+    <div class="row" style="flex-wrap:wrap">
+      <button class="btn ghost sm" onclick="exportData()">Eksportuj dane (JSON)</button>
+      <button class="btn danger sm" onclick="resetData()">Przywróć dane z Excela</button>
+    </div>
+  </div>`;
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify({data:S,archive},null,1)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='plan_diety_backup.json';a.click();
+}
+function resetData(){
+  if(!confirm('Nadpisać wszystko oryginalnymi danymi z pliku Excel? Zmiany przepadną (archiwum zostaje).'))return;
+  S=JSON.parse(JSON.stringify(SEED));S.checked={};persist();render();toast('Przywrócono dane z Excela');
+}
+
+/* ================= SHELL ================= */
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function showModal(html){document.getElementById('modal').innerHTML=html;document.getElementById('modalbg').classList.add('open')}
+function closeModal(){document.getElementById('modalbg').classList.remove('open')}
+document.getElementById('modalbg').addEventListener('click',e=>{if(e.target.id==='modalbg')closeModal()});
+function renderMainOnly(){
+  const m=document.getElementById('main');
+  const active=document.activeElement;const val=active&&active.value;const isSearch=active&&active.tagName==='INPUT';
+  m.innerHTML=views[curTab]();
+  if(isSearch){const inp=m.querySelector('input');if(inp){inp.focus();inp.value=val;inp.setSelectionRange(val.length,val.length)}}
+}
+const views={plan:viewPlan,recipes:viewRecipes,products:viewProducts,shop:viewShop,calc:viewCalc,arch:viewArch,set:viewSet};
+function render(){document.getElementById('main').innerHTML=views[curTab]()}
+(async()=>{await loadState();renderTabs();render()})();
+</script>
+</body>
+</html>
